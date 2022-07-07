@@ -6931,12 +6931,13 @@ class Chart {
     const newControllers = this.buildOrUpdateControllers();
     this.notifyPlugins('beforeElementsUpdate');
     let minPadding = 0;
-    for (let i = 0, ilen = this.data.datasets.length; i < ilen; i++) {
-      const {controller} = this.getDatasetMeta(i);
-      const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
-      controller.buildOrUpdateElements(reset);
-      minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
-    }
+    if(mode != 'none') {
+      for (let i = 0, ilen = this.data.datasets.length; i < ilen; i++) {
+        const {controller} = this.getDatasetMeta(i);
+        const reset = !animsDisabled && newControllers.indexOf(controller) === -1;
+        controller.buildOrUpdateElements(reset);
+        minPadding = Math.max(+controller.getMaxOverflow(), minPadding);
+      }
     minPadding = this._minPadding = options.layout.autoPadding ? minPadding : 0;
     this._updateLayout(minPadding);
     if (!animsDisabled) {
@@ -6945,6 +6946,7 @@ class Chart {
       });
     }
     this._updateDatasets(mode);
+  }
     this.notifyPlugins('afterUpdate', {mode});
     this._layers.sort(compare2Level('z', '_idx'));
     const {_active, _lastEvent} = this;

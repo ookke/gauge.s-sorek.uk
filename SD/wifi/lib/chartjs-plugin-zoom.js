@@ -666,8 +666,8 @@ function wheel(chart, event) {
       y: event.clientY - rect.top
     }
   };
-
-  zoom(chart, amount);
+  // patch
+  zoom(chart, amount, 'default');
 
   if (onZoomComplete) {
     onZoomComplete();
