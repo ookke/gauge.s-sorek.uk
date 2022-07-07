@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauge.S - Log viewer</title>
+	    <style type="text/css" media="screen">
+		body {
+			background-color: #505363;
+			color: #f8f8f2;
+			font-size: 12px;
+			font-family: sans-serif;
+			font-weight: bold;
+		}
+		ul {
+			list-style-type: none;
+		}
+		#parameters {
+			width: 300px;
+			float: right;
+			height: 80vh;
+			overflow-y: scroll;
+			display: none;
+			position: absolute;
+			z-index: 100;
+			background: #282a36;
+			border-radius: 4px;
+			padding: 5px;
+
+		}
+		#graph {
+			width: 99%;
+			height: 100%;
+			background: white;
+		}
+
+		  
+		</style>
+	<script src="wifi/lib/chart.js" ></script>
+	<script src="wifi/lib/hammer.js"></script>
+	<script src="wifi/lib/chartjs-plugin-zoom.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+	<script src="logviewer.js"></script>
+	<script type="text/javascript">
+	 function onBodyLoad(){
+			getLog('/Gauge.S-9_08-30.csv');			
+      };
+    </script>
+  </head>
+  <body onload="onBodyLoad();">
+	<span id="stats"></span>
+    <br/><br/>
+	<button onclick="gaugeS.chart.resetZoom()" style="float: right; margin-right: 10px;">Reset Zoom</button>
+	<div id="parameters_container">
+		<button onclick="toggleParamsPopover()">Parameters</button>
+		<div id="parameters" >
+		<ul id="params">
+		</ul>
+		</div>
+	</div>
+	<div id="graph">
+		<canvas id="teh_canvas" ></canvas>
+	</div>
+	
+    <iframe id=download-frame style='display:none;'></iframe>
+  </body>
+</html>
