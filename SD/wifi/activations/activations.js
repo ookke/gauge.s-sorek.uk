@@ -1,4 +1,4 @@
-var fileController = {
+var activationsController = {
     attach: function() {
        
     },
@@ -11,4 +11,4 @@ var fileController = {
 
 };
 
-dots.tabs.register('activations_tab', fileController);
+dots.tabs.register('activations_tab', activationsController);
