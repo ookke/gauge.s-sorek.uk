@@ -1,0 +1,13 @@
+#activations {
+    float: left;
+    width: 200px;
+}
+
+#activations button {
+    margin: 10px;
+}
+
+#result {
+    float: left;
+    min-width: 200px;
+}
