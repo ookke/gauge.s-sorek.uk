@@ -9,7 +9,13 @@ dots.tabs = {
         let tabList = document.getElementById('dots_tab_list');
         let tabs = Array.from(tabList.getElementsByTagName('li'));
         tabs.forEach(tab => tab.addEventListener('click', (event) => {
-            let tabId = event.target.id;
+
+            let previousActive = tabs.filter(tab => tab.className.indexOf('active') != -1)[0];
+            previousActive.className = previousActive.className.replace('active','');
+
+            let newActive = event.target;
+            let tabId = newActive.id;
+            newActive.className += ' active';
             dots.tabs.activateTab(tabId);
         }));
         let defaultTab = tabs.filter(tab => tab.className.indexOf('active') != -1)[0];
