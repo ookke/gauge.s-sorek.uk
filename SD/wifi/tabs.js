@@ -1,4 +1,4 @@
-var dots = { };
+var dots = dots || { };
 dots.tabs = { 
     _registry: {},
     _activeTabController: null,

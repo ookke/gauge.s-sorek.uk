@@ -7,6 +7,8 @@ var activationsController = {
             button.innerText = activation;
             buttonContainer.appendChild(button);
        } );
+       dots.ui.showSpinner('doing spinny things');
+       setTimeout(() => { dots.ui.hideSpinner(); }, 20000 )
     },
     getInitialMarkup: function() {
         return `<div id="activations"></div>
