@@ -4,6 +4,10 @@ body {
     overflow: hidden;
 }
 
+#logo {
+    display: block;
+}
+
 html {
     background-color: #151515;
     color: #ff7e00;
