@@ -4,10 +4,12 @@
     <title>Gauge.S - SD Editor</title>
     <link rel="stylesheet" href="/wifi/common.css">
     <link rel="stylesheet" href="/wifi/file-explorer/file-explorer.css">
+    <link rel="stylesheet" href="/wifi/log-viewer/log-viewer.css">
     <link rel="stylesheet" href="/wifi/activations/activations.css">
     <script src="/wifi/common.js" type="text/javascript" charset="utf-8"></script>
     <script src="/wifi/tabs.js" type="text/javascript" charset="utf-8"></script>
     <script src="/wifi/file-explorer/file-explorer.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/wifi/log-viewer/log-viewer.js" type="text/javascript" charset="utf-8"></script>
     <script src="/wifi/activations/activations.js" type="text/javascript" charset="utf-8"></script>
     <script src="/wifi/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
   </head>
@@ -15,10 +17,11 @@
     <img id="logo" src="logo.svg" alt="Gauge.S Logo">
     <ul id="dots_tab_list">
       <!-- should probably be empty containers and content loaded separately -->
+      <li id="live_data_tab" class="dots-tab">Live Data</li>
       <li id="file_explorer_tab" class="dots-tab active">File Explorer</li>
-      
       <li id="activations_tab" class="dots-tab">Activations</li>
-     <!--  <li id="activations_tab" class="dots-tab">Log viewer</li>
+      <li id="log_viewer_tab" class="dots-tab">Log Viewer</li>
+     <!--  
       <li id="activations_tab" class="dots-tab">Scatter plot</li>
       <li id="activations_tab" class="dots-tab">Histogram</li>  -->
       <div id="tabs_content">

@@ -1,0 +1,12 @@
+#chart {
+    display: inline-block;
+}
+
+#settingsDiv {
+    display:inline-block;
+    vertical-align: top;
+}
+
+#hiddenColoursPanel {
+    display: none;
+}
