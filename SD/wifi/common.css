@@ -29,7 +29,6 @@ input[type=checkbox]::before {
     display: inline-block;
     border-radius: 2px;
     border: 1px solid;
-    border-bottom: 0px;
     padding: 4px;
     cursor: pointer;
 }
@@ -112,4 +111,24 @@ input[type=checkbox]::before {
       -webkit-transform: rotate(360deg);
       transform: rotate(360deg);
     }
+}
+
+
+@media (max-width : 632px) {
+
+    #dots_tab_list {
+        margin-bottom: 20px;
+    }
+
+    #dots_tab_list .dots-tab {
+        width: 95%;
+        font-size: 20px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    #tabs_content {
+        margin-top: 20px;
+    }
+
 }
