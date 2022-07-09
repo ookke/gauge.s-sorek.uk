@@ -54,7 +54,7 @@ function createFileUploader(element, tree, editor){
 
     function httpPostProcessRequest(){
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        if(xmlHttp.status >= 400) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
         else {
           tree.refreshPath(path.value);
         }
@@ -375,7 +375,7 @@ function createFileUploader(element, tree, editor){
     function delCb(path){
       return function(){
         if (xmlHttp.readyState == 4){
-          if(xmlHttp.status != 200){
+          if(xmlHttp.status >= 400){
             alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
           } else {
             if(path.lastIndexOf('/') < 1){
@@ -406,7 +406,7 @@ function createFileUploader(element, tree, editor){
       return function(){
         if (xmlHttp.readyState == 4){
           //clear loading
-          if(xmlHttp.status == 200) addList(parent, path, JSON.parse(xmlHttp.responseText));
+          if(xmlHttp.status < 400) addList(parent, path, JSON.parse(xmlHttp.responseText));
         }
       }
     }
@@ -466,7 +466,7 @@ function createFileUploader(element, tree, editor){
     //post
     function httpPostProcessRequest(){
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        if(xmlHttp.status >= 400) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
       }
     }
     function httpPost(filename, data, type){
@@ -477,21 +477,14 @@ function createFileUploader(element, tree, editor){
       xmlHttp.open("POST", "/edit");
       xmlHttp.send(formData);
     }
-    //get
-    function httpGetProcessRequest(){
-      if (xmlHttp.readyState == 4){
-        document.getElementById("preview").style.display = "none";
-        document.getElementById("editor").style.display = "block";
-        if(xmlHttp.status == 200) editor.setValue(xmlHttp.responseText);
-        else editor.setValue("");
-        editor.clearSelection();
-      }
-    }
-    function httpGet(theUrl){
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = httpGetProcessRequest;
-        xmlHttp.open("GET", theUrl, true);
-        xmlHttp.send(null);
+
+    function openFile(theUrl){
+        dots.http.getWithSpinner(theUrl, (responseText) => {
+          document.getElementById("preview").style.display = "none";
+          document.getElementById("editor").style.display = "block";
+          editor.setValue(responseText);
+          editor.clearSelection();
+        });
     }
 
     if(lang !== "plain") editor.getSession().setMode("ace/mode/"+lang);
@@ -525,13 +518,13 @@ function createFileUploader(element, tree, editor){
         },
         readOnly: false
     });
-    httpGet(file);
+    openFile(file);
     editor.loadUrl = function(filename){
       file = filename;
       lang = getLangFromFilename(file);
       type = "text/"+lang;
       if(lang !== "plain") editor.getSession().setMode("ace/mode/"+lang);
-      httpGet(file);
+      openFile(file);
     }
     return editor;
   }

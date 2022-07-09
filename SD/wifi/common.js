@@ -13,17 +13,15 @@ dots.ui = {
 
 dots.http = {
     get: (url, success, error) => { 
-
         let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4 && xhr.status == 200){
-                success(xhr.responseText)
+        xhr.onload = () => {
+            success(xhr.responseText)
+        }
+        xhr.onerror = () => {
+            if(error) {
+                error(xhr);
             } else {
-                if(error) {
-                    error(xhr);
-                } else {
-                    alert('Get failed, status '+xhr.status+ ' response: '+xhr.responseText);
-                }
+                alert('Get failed, status '+xhr.status+ ' response: '+xhr.responseText);
             }
         }
         xhr.open("GET", url, true);
