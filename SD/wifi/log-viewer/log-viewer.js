@@ -3,8 +3,6 @@ let graph = null;
 // -------- just for tab support -----------
 var viewerController = {
     attach: function() {
-        setupFileReader();
-
         // TODO: the yaxes variable survives when navigating off the tab
         //       which means we can reload all the graph settings they had.
         //       Do that.
@@ -30,9 +28,7 @@ var viewerController = {
         listLogFiles();
     },
     getInitialMarkup: function() {
-        return `<label for="fileInput">Upload log:</label>
-        <input type="file" accept=".csv" id="fileInput"/><br>
-        <label for="log_select">Select log:</label>
+        return `<label for="log_select">Select log:</label>
         <select id="log_select"><option></option></select>
         <div>
             <canvas id="chart" onmousedown="chartMouseDown(event)" onmouseup="chartMouseUp(event)" onmousemove="chartMouseMove(event)"></canvas>
@@ -189,20 +185,6 @@ addOption = (select, value) => {
     option.setAttribute("value", value);
     option.appendChild(document.createTextNode(value));
     select.appendChild(option);
-}
-
-setupFileReader = () => {
-    let picker = document.getElementById("fileInput");
-
-    picker.onchange = () => {
-        yaxes = [];
-        let selected = picker.files[0];
-        let reader = new FileReader();
-        reader.addEventListener("loadend", () => {
-            parseLogFile(reader.result);
-        });
-        reader.readAsText(selected);
-    }
 }
 
 let parseLogFile = (fileData) => {
