@@ -28,36 +28,35 @@ var viewerController = {
         listLogFiles();
     },
     getInitialMarkup: function() {
-        return `<label for="log_select">Select log:</label>
-        <select id="log_select"><option></option></select>
-        <div>
-            <canvas id="chart" onmousedown="chartMouseDown(event)" onmouseup="chartMouseUp(event)" onmousemove="chartMouseMove(event)"></canvas>
-            <div id="settingsDiv">
-                <p> 
-                    <label for="xselect">X axis:</label> 
-                    <select id="xselect" onchange="generatePlot()"></select> 
-                </p>
-                <div id="yaxiscontainer"></div>
-                <button type="button" onclick="addyaxis()">Add Y axis</button>
-                <div>
-                    <label for="coloursCheckbox">Colours:</label>
-                    <input id="coloursCheckbox" type="checkbox" onchange="toggleColours()"/>
-                    <div id="hiddenColoursPanel">
-                        <div>
-                            <select id="colourSelect" onchange="updateColours()"></select>
-                        </div>
-                        <div>
-                            <label for="redValue">Value of red</label>
-                            <input id="redValue" type="number" onchange="updateColours()"/>
-                        </div>
-                        <div>
-                            <label for="greenValue">Value of green</label>
-                            <input id="greenValue" type="number" onchange="updateColours()"/>
-                        </div>
+        return `
+        <ul id="log_select"></ul>
+        <canvas id="chart" onmousedown="chartMouseDown(event)" onmouseup="chartMouseUp(event)" onmousemove="chartMouseMove(event)"></canvas>
+        <div id="settingsDiv">
+            <p> 
+                <label for="xselect">X axis:</label> 
+                <select id="xselect" onchange="generatePlot()"></select> 
+            </p>
+            <div id="yaxiscontainer"></div>
+            <button type="button" onclick="addyaxis()">Add Y axis</button>
+            <div>
+                <label for="coloursCheckbox">Colours:</label>
+                <input id="coloursCheckbox" type="checkbox" onchange="toggleColours()"/>
+                <div id="hiddenColoursPanel">
+                    <div>
+                        <select id="colourSelect" onchange="updateColours()"></select>
+                    </div>
+                    <div>
+                        <label for="redValue">Value of red</label>
+                        <input id="redValue" type="number" onchange="updateColours()"/>
+                    </div>
+                    <div>
+                        <label for="greenValue">Value of green</label>
+                        <input id="greenValue" type="number" onchange="updateColours()"/>
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        `;
     },
     destroy: function() {
 
@@ -218,16 +217,26 @@ let listLogFiles = () => {
         var logFiles = files.filter(file => file.name.indexOf('csv') != -1);
         var dropDown = document.getElementById('log_select');
         logFiles.forEach(log => {
-            var option = document.createElement('option');
+            var option = document.createElement('li');
+            option.id = log.name;
             option.innerText = log.name;
             dropDown.appendChild(option);
+            option.addEventListener('click', function() {
+                var filename = this.id;
+                console.log(filename);
+                dots.http.getWithSpinner(filename, (responseText) => {
+                    parseLogFile(responseText);
+                  });
+            });
         });
+        /*
         dropDown.addEventListener('change',(event) => {
             var fileName = event.target.value;
             dots.http.getWithSpinner(fileName, (responseText) => {
                 parseLogFile(responseText);
               });
-        });
+              
+        });*/
     });
 
     

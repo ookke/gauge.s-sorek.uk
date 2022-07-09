@@ -2,9 +2,24 @@
     display: inline-block;
 }
 
+/* TODO: refactor this into a class */
 #settingsDiv {
     display:inline-block;
     vertical-align: top;
+}
+
+#log_select {
+    display: inline-block;
+    vertical-align: top;
+    list-style: none;
+    padding: 0;
+    font-size: 11px;
+}
+/* ------------------- */
+
+#log_select li:hover {
+    text-decoration-line: underline;
+    cursor: pointer;
 }
 
 #hiddenColoursPanel {
