@@ -144,6 +144,7 @@
   }
   #editor {
     background-color: #282a36 !important;
+    height: 80vh;
   }
   #editor, #preview {
     position: absolute;
