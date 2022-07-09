@@ -21,7 +21,7 @@ app.get('/data', function(req, res) {
 
 
 app.get('/list',  function(req, res) {
-	res.json([{name: 'index.htm', type: 'file'},{name: 'Gauge.S-1.csv', type: 'log'}]);
+	res.json([{name: 'index.htm', type: 'file'},{name: 'Gauge.S-9_08-30.csv', type: 'file'}]);
 });
 
 app.listen(1337);
