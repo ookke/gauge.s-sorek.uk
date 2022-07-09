@@ -1,13 +1,23 @@
 body {
-    font-size: 12px;
+    font-size: 12pt;
     font-family: sans-serif;
-    background-color: #282a36;
-    color: #f8f8f2;
     overflow: hidden;
 }
 
-a {
-color: #f8f8f2;
+html {
+    background-color: #151515;
+    color: #ff7e00;
+    accent-color: #ff7e00;
+}
+
+button, select, input, a {
+    background-color: #151515;
+    color: #ff7e00;
+    border-color: #ff7e00;
+}
+
+input[type=checkbox]::before {
+    background-color: #151515;
 }
 
 .dots-tab {
@@ -22,8 +32,8 @@ color: #f8f8f2;
 
 .dots-tab.active {
     border: 2px solid;
-    background: white;
-    color: black;
+    background: #ff7e00;
+    color: #151515;
 }
 
 #tabs_content {
@@ -32,8 +42,9 @@ color: #f8f8f2;
     position: relative;
 }
 
-
-
+#dots_tab_list {
+    padding-inline-start: 0px;
+}
 
 #dots_spinner {
     font-size: 10px;
@@ -66,7 +77,7 @@ color: #f8f8f2;
     content: '';
 }
 #dots_spinner:after {
-    background: #282a36;
+    background: #151515;
     width: 75%;
     height: 75%;
     border-radius: 50%;
