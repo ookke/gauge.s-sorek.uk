@@ -11,7 +11,9 @@ var viewerController = {
 
         let canvas = document.getElementById("chart");
         if (!('transferControlToOffscreen' in canvas)) {
-            throw new Error('webgl in worker unsupported');
+            document.querySelector("#tabs_content").innerHTML = "webgl in worker unsupported";
+            console.error("webgl in worker unsupported");
+            return;
         }
 
         var offscreen = canvas.transferControlToOffscreen();
