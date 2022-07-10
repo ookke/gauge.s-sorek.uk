@@ -31,6 +31,10 @@ clearScreen = function() {
 }
 
 resize = function(size) {
+    if(size <= 0) {
+        throw new Error("graph.js: negative size (" + size.toString() + ") has been requested");
+        return;
+    }
     canvas.width = size;
     canvas.height = size;
     

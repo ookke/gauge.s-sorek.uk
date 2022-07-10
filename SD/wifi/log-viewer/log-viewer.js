@@ -24,8 +24,11 @@ var viewerController = {
         }, [offscreen]);
 
         sizeUI();
-
         listLogFiles();
+
+        if(yaxes.length != 0) { // means a file is already open
+            restoreDOM();
+        }
     },
     getInitialMarkup: function() {
         return `
@@ -34,7 +37,7 @@ var viewerController = {
         <div id="settingsDiv">
             <p> 
                 <label for="xselect">X axis:</label> 
-                <select id="xselect" onchange="generatePlot()"></select> 
+                <select id="xselect" onchange="update_xvar();generatePlot()"></select> 
             </p>
             <div id="yaxiscontainer"></div>
             <button type="button" onclick="addyaxis()">Add Y axis</button>
@@ -70,6 +73,32 @@ dots.tabs.register('log_viewer_tab', viewerController);
 let logData = {};
 let columns = [];
 let yaxes = [];
+let xvar;
+
+let update_xvar = function() {
+    xvar = document.getElementById("xselect").value;
+}
+
+let pageCleanup = function() {
+    logData = {};
+    columns = [];
+    yaxes = [];
+}
+
+let restoreDOM = function() {
+    var xselect = document.getElementById("xselect");
+    var yaxis_div = document.getElementById("yaxiscontainer");
+
+    for(var i = 0; i < columns.length; i++) {
+        addOption(xselect, columns[i]);
+    };
+
+    for(var i = 0; i < yaxes.length; i++) {
+        yaxis_div.appendChild(yaxes[i]);
+    }
+
+    generatePlot();
+}
 
 toggleColours = function() {
     let coloursToggle = document.getElementById("coloursCheckbox");
@@ -155,8 +184,6 @@ addyaxis = () => {
 }
 
 function generatePlot() {
-    let xvar = document.getElementById("xselect").value;
-
     let traces = [];
     yaxes.forEach((axis) => {
         traces.push({
@@ -186,7 +213,10 @@ addOption = (select, value) => {
     select.appendChild(option);
 }
 
+// should only be called once when a file is loaded
 let parseLogFile = (fileData) => {
+    pageCleanup();
+
     let temp = fileData.split("\n");
     for(let i in temp) {
         temp[i] = temp[i].split(",");
@@ -207,6 +237,11 @@ let parseLogFile = (fileData) => {
 
         columns.push(temp[0][i]);
     }
+
+    // xvar is only updated during the xselect onchange() which means
+    // we need to initialize it during file load.
+    xvar = temp[0][0];
+    
     logData.points_count = temp.length - 1;
     generatePlot();
 }
@@ -223,23 +258,12 @@ let listLogFiles = () => {
             dropDown.appendChild(option);
             option.addEventListener('click', function() {
                 var filename = this.id;
-                console.log(filename);
                 dots.http.getWithSpinner(filename, (responseText) => {
                     parseLogFile(responseText);
                   });
             });
         });
-        /*
-        dropDown.addEventListener('change',(event) => {
-            var fileName = event.target.value;
-            dots.http.getWithSpinner(fileName, (responseText) => {
-                parseLogFile(responseText);
-              });
-              
-        });*/
     });
-
-    
 }
 
 min = (a, b) => {
