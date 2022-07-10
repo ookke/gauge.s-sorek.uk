@@ -2,12 +2,14 @@ body {
     font-size: 12pt;
     font-family: sans-serif;
     overflow: hidden;
+    height: 100%;
 }
 
 html {
     background-color: #151515;
     color: #ff7e00;
     accent-color: #ff7e00;
+    height: 100%;
 }
 
 button, select, input, a {
@@ -37,14 +39,20 @@ input[type=checkbox]::before {
 
 #tabs_content {
     width: 100%;
+    height: 85%;
     border-top: 1px solid;
     position: relative;
     padding-top: 10px;
 }
 
 #top_bar {
+    height: 10%;
     display: flex;
     justify-content: space-between;
+}
+
+#logo {
+    height: 90%;
 }
 
 #dots_spinner {
