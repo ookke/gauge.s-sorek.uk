@@ -4,10 +4,6 @@ body {
     overflow: hidden;
 }
 
-#logo {
-    display: block;
-}
-
 html {
     background-color: #151515;
     color: #ff7e00;
@@ -43,10 +39,12 @@ input[type=checkbox]::before {
     width: 100%;
     border-top: 1px solid;
     position: relative;
+    padding-top: 10px;
 }
 
-#dots_tab_list {
-    padding-inline-start: 0px;
+#top_bar {
+    display: flex;
+    justify-content: space-between;
 }
 
 #dots_spinner {

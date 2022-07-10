@@ -3,10 +3,7 @@ let graph = null;
 // -------- just for tab support -----------
 var viewerController = {
     attach: function() {
-        // TODO: the yaxes variable survives when navigating off the tab
-        //       which means we can reload all the graph settings they had.
-        //       Do that.
-
+        
         // TODO: init the graph worker when the page is initially loaded
         //       that way we don't have to be connected to Gauge.S to
         //       properly click on the log viewer tab
