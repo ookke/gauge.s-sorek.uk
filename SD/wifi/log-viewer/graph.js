@@ -12,10 +12,10 @@ var zoom = {};
 var colour = null;
 
 var colours = [
-    "#0000FF",
+    "#FFFFFF",
+    "#FFFF00",
     "#FF0000",
-    "#00FF00",
-    "#FFFF00"
+    "#00FF00"
 ];
 
 init = function(graphCanvas) {
@@ -26,7 +26,7 @@ init = function(graphCanvas) {
 }
 
 clearScreen = function() {
-    ctx.fillStyle = "#151515";
+    ctx.fillStyle = "#282a36";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 

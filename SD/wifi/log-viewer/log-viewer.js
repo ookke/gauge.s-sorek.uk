@@ -19,7 +19,7 @@ var viewerController = {
         var offscreen = canvas.transferControlToOffscreen();
         graph.postMessage({ 
             purpose: "init",
-            canvas: offscreen 
+            canvas: offscreen,
         }, [offscreen]);
 
         sizeUI();
