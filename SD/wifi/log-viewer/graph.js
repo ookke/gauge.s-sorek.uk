@@ -128,7 +128,7 @@ graph = function() {
             }
             //ctx.fillStyle = "#ff0000";
             
-            fillCircle(Math.round(x), Math.round(y), 2);
+            fillCircle(Math.round(x), Math.round(y), 1);
         }
     });
 
