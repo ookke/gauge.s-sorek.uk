@@ -1,4 +1,6 @@
 
+var mode = "scatter";
+
 var traces = [];
 var canvas;
 var image;
@@ -109,6 +111,11 @@ graph = function() {
     traces.forEach((trace, traceIndex) => {
         let y_min = min(trace.y);
         let y_max = max(trace.y);
+        var firstPoint = true;
+        if(mode === "timeSeries") {
+            ctx.strokeStyle = colours[traceIndex % colours.length];
+            ctx.beginPath();
+        }
         //console.log({x_min, x_max, y_min, y_max});
         for(let i = 0; i < trace.x.length; i++) {
             let x = map(trace.x[i], zoom.x_min, zoom.x_max, 0, canvas.width);
@@ -126,10 +133,20 @@ graph = function() {
             } else {
                 ctx.fillStyle = colours[traceIndex % colours.length];
             }
-            //ctx.fillStyle = "#ff0000";
             
-            fillCircle(Math.round(x), Math.round(y), 1);
+            if(mode === "timeSeries") {
+                if(firstPoint) {
+                    ctx.moveTo(Math.round(x), Math.round(y));
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(Math.round(x), Math.round(y));
+                }
+            } else {
+                fillCircle(Math.round(x), Math.round(y), 1);
+            }
         }
+
+        if(mode === "timeSeries") ctx.stroke();
     });
 
     image = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -194,6 +211,12 @@ onmessage = function(e) {
 
     if(e.data.purpose === "init") {
         init(e.data.canvas);
+        return;
+    }
+
+    if(e.data.purpose === "mode") {
+        mode = e.data.mode;
+        graph();
         return;
     }
 

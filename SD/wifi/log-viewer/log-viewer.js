@@ -34,7 +34,11 @@ var viewerController = {
         <ul id="log_select"></ul>
         <canvas id="chart" onmousedown="chartMouseDown(event)" onmouseup="chartMouseUp(event)" onmousemove="chartMouseMove(event)"></canvas>
         <div id="settingsDiv">
-            <p> 
+            <ul id="modeTabs">
+                <li id="scatter" onclick="selectActiveTab('scatter')" class="dots-tab active">Scatter Plot</li>
+                <li id="timeSeries" onclick="selectActiveTab('timeSeries')" class="dots-tab">Time Series</li>
+            </ul>
+            <p id="xaxisP"> 
                 <label for="xselect">X axis:</label> 
                 <select id="xselect" onchange="update_xvar();generatePlot()"></select> 
             </p>
@@ -73,6 +77,28 @@ let logData = {};
 let columns = [];
 let yaxes = [];
 let xvar;
+
+let selectActiveTab = function(id) {
+    let tabsParent = document.getElementById("modeTabs");
+    for(let tab of tabsParent.children) {
+        tab.classList.remove("active");
+    }
+    document.getElementById(id).classList.add("active");
+
+    graph.postMessage({
+        purpose: "mode",
+        mode: id
+    });
+
+    if(id === "timeSeries") {
+        document.getElementById("xaxisP").style.display = "none";
+        document.getElementById("xselect").value = columns[0];
+        xvar = columns[0];
+        generatePlot();
+    } else {
+        document.getElementById("xaxisP").style.display = "";
+    }
+}
 
 let update_xvar = function() {
     xvar = document.getElementById("xselect").value;

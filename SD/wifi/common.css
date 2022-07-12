@@ -23,6 +23,10 @@ button, select, input, a {
     border-color: var(--fg);
 }
 
+ul {
+    padding-inline-start: 0px;
+}
+
 input[type=checkbox]::before {
     background-color: var(--bg);
 }
