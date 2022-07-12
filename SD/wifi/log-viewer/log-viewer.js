@@ -44,7 +44,7 @@ var viewerController = {
             </p>
             <div id="yaxiscontainer"></div>
             <button type="button" onclick="addyaxis()">Add Y axis</button>
-            <div>
+            <div id="coloursDiv">
                 <label for="coloursCheckbox">Colours:</label>
                 <input id="coloursCheckbox" type="checkbox" onchange="toggleColours()"/>
                 <div id="hiddenColoursPanel">
@@ -92,11 +92,13 @@ let selectActiveTab = function(id) {
 
     if(id === "timeSeries") {
         document.getElementById("xaxisP").style.display = "none";
+        document.getElementById("coloursDiv").style.display = "none";
         document.getElementById("xselect").value = columns[0];
         xvar = columns[0];
         generatePlot();
     } else {
         document.getElementById("xaxisP").style.display = "";
+        document.getElementById("coloursDiv").style.display = "";
     }
 }
 
