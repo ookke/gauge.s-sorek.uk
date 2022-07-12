@@ -270,7 +270,11 @@ function createFileUploader(element, tree, editor){
       label.textContent = name.toLowerCase();
       leaf.appendChild(label);
       leaf.onclick = function(e){
-        if(isTextFile(leaf.id)){
+        if(isLogFile(leaf.id)) {
+          var initParams = { fileName: leaf.id };
+          dots.tabs.switchTab('log_viewer_tab', initParams);
+        }
+        else if(isTextFile(leaf.id)){
           editor.loadUrl(leaf.id);
         } else if(isImageFile(leaf.id)){
           loadPreview(leaf.id);
@@ -358,6 +362,11 @@ function createFileUploader(element, tree, editor){
         }
       }
       return false;
+    }
+
+    function isLogFile(path) {
+      var ext = /(?:\.([^.]+))?$/.exec(path)[1];
+      return ext && ext == "csv";
     }
 
     this.refreshPath = function(path){

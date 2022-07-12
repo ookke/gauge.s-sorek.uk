@@ -84,12 +84,25 @@ dots.tabs = {
             let newActive = event.target;
             let tabId = newActive.id;
             newActive.className += ' active';
-            dots.tabs.activateTab(tabId);
+            dots.tabs._activateTab(tabId);
         }));
         let defaultTab = tabs.filter(tab => tab.className.indexOf('active') != -1)[0];
-        dots.tabs.activateTab(defaultTab.id);
+        dots.tabs._activateTab(defaultTab.id);
     },
-    activateTab: (id) => {
+    //for programmatically switching tabs, optionally providing initParams context
+    switchTab: (id, params = {}) => {
+        let tabList = document.getElementById('dots_tab_list');
+        let tabs = Array.from(tabList.getElementsByTagName('li'));
+
+        let previousActive = tabs.filter(tab => tab.className.indexOf('active') != -1)[0];
+        previousActive.className = previousActive.className.replace('active','');
+
+        let newActive = document.getElementById(id);
+        newActive.className += ' active';
+
+        dots.tabs._activateTab(id, params);
+    },
+    _activateTab: (id, params = {}) => {
         let container = document.getElementById('tabs_content');
 
         //clean up old tab
@@ -102,7 +115,7 @@ dots.tabs = {
         let newTabController = dots.tabs._registry[id];
         let initialHtml = newTabController.getInitialMarkup();
         container.innerHTML = initialHtml;
-        newTabController.attach();
+        newTabController.attach(params);
         dots.tabs._activeTabController = newTabController;
     }
 

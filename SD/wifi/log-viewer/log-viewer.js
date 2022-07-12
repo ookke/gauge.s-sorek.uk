@@ -2,7 +2,7 @@ let graph = null;
 
 // -------- just for tab support -----------
 var viewerController = {
-    attach: function() {
+    attach: function(params) {
         
         // TODO: init the graph worker when the page is initially loaded
         //       that way we don't have to be connected to Gauge.S to
@@ -23,7 +23,7 @@ var viewerController = {
         }, [offscreen]);
 
         sizeUI();
-        listLogFiles();
+        listLogFiles(params);
 
         if(yaxes.length != 0) { // means a file is already open
             restoreDOM();
@@ -268,12 +268,13 @@ let parseLogFile = (fileData) => {
     // xvar is only updated during the xselect onchange() which means
     // we need to initialize it during file load.
     xvar = temp[0][0];
+    addyaxis();
     
     logData.points_count = temp.length - 1;
     generatePlot();
 }
 
-let listLogFiles = () => {
+let listLogFiles = (initParams) => {
     dots.http.getWithSpinner('/list?dir=/', (response) => {
         var files = JSON.parse(response);
         var logFiles = files.filter(file => file.name.indexOf('csv') != -1);
@@ -287,9 +288,17 @@ let listLogFiles = () => {
                 var filename = this.id;
                 dots.http.getWithSpinner(filename, (responseText) => {
                     parseLogFile(responseText);
-                  });
+                });
             });
         });
+
+        //did file explorer pass us a filename?
+        if(initParams && initParams.fileName) {
+            var fileName = initParams.fileName;
+            dots.http.getWithSpinner(fileName, (responseText) => {
+                parseLogFile(responseText);
+            });
+        }
     });
 }
 
