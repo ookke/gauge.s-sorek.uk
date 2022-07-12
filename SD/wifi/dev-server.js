@@ -19,6 +19,10 @@ app.get('/data', function(req, res) {
 )
 });
 
+app.get('/parameters', function(req, res) {
+	res.json({ ecuparam: [{ h:"asd", v: Math.sin(Date.now()) }] } );
+});
+
 
 app.get('/list',  function(req, res) {
 	res.json([{name: 'index.htm', type: 'file'},{name: 'Gauge.S-9_08-30.csv', type: 'file'}]);
