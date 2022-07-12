@@ -1,3 +1,4 @@
+(() => {
 var fileController = {
     attach: function() {
         var vars = {};
@@ -529,5 +530,5 @@ function createFileUploader(element, tree, editor){
     return editor;
   }
  
-
+})();
 
