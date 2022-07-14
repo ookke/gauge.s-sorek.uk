@@ -13,8 +13,15 @@ app.get('/list',  function(req, res) {
 	res.json(listing);
 });
 
+
+let randomValueGenerator = (min, max) => {
+	return Math.round (Math.max(min, Math.random() * max) * 100) / 100;
+}
+
 app.get('/parameters', function(req, res) {
-	res.json({ ecuparam: [{ h:"asd", v: Math.sin(Date.now()) }] } );
+	res.json({ ecuparam: [{ h:"Engine Speed", v: randomValueGenerator(0, 7000) },
+	{ h:"Coolant Temp", v: randomValueGenerator(0, 100) },
+	{ h:"Oil Temp", v: randomValueGenerator(0, 100) }] });
 });
 
 
