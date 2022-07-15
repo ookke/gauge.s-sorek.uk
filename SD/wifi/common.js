@@ -1,5 +1,6 @@
 var dots = dots || { };
 
+(() => {
 dots.ui = {
     showSpinner: () => {
         let spinner = document.getElementById('dots_spinner');
@@ -59,6 +60,7 @@ dots.http = {
             });
         });
     },
+
     post: (url, payloadString, success, error) => {
         //TODO
     },
@@ -66,6 +68,50 @@ dots.http = {
         //TODO
     }
 };
+
+
+let timerId = null;
+let liveListeners = [];
+
+let refreshLiveData = () => {
+    dots.http.get('/parameters', (responseText) => {
+        let response = JSON.parse(responseText);
+        if(response.ecuparam) {
+            var data = response.ecuparam.map((point) => { return {
+                header: point.h,
+                value: point.v
+            }});
+            liveListeners.forEach(listener => {
+                try { 
+                    listener(data);
+                } catch(ex) {
+                    console.log('live data listener threw exceeption: '+ex);
+                }
+            })
+        } else {
+            console.log('warn: no ecuparam property in /parameters response ?');
+        }
+        
+    }, (errorRes) => {
+        console.log('error from server when requesting /parameters: '+errorRes);
+    });
+}
+
+//returns unsubscribe func, clean up on e.g. tab destroy!
+let subscribeLiveParameters = (callback) => {
+    liveListeners.push(callback);
+    if(timerId == null) {
+        timerId = setInterval(() => { refreshLiveData(); }, 100 );
+    }
+
+    let unsub = () => { 
+        liveListeners = liveListeners.length > 1 ? liveListeners.filter(itm => itm != callback) : []; 
+    }
+
+    return unsub;
+}
+dots.http.subscribeLiveParameters = subscribeLiveParameters;
+
 
 dots.tabs = { 
     _registry: {},
@@ -120,3 +166,4 @@ dots.tabs = {
     }
 
 };
+})();
