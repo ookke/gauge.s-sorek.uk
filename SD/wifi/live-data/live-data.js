@@ -1,10 +1,6 @@
 (() => {
 
-let liveDataListenerUnsubs = [];
 
-let dashboard = {
-   pages: [{ name: "Page1", widgets: [], active: true }]
-}
 
 let liveDataController = {
     attach: function() {
@@ -17,18 +13,20 @@ let liveDataController = {
         });
 
         document.getElementById('add_widget').addEventListener('click', event => {
-            var dashboardContainer = document.getElementById('dashboard_container');
+            let dashboardContainer = document.getElementById('dashboard_container');
 
-            var widgetContainer = document.createElement('div');
+            let widgetContainer = document.createElement('div');
             widgetContainer.style.gridColumn = '2 / span 1';
             widgetContainer.style.gridRow = '2 / span 1';
-            widgetContainer.innerHTML='LabelWidget';
 
-            liveDataListenerUnsubs.push(dots.http.subscribeLiveParameters(params => {
-                widgetContainer.innerHTML = params[0].value + '[LabelWidget]';
-            }));
+            let widget = dots.dashboard.createWidget('LabelWidget');
+            widget.settings.dataSource.value = 'Coolant Temp';
 
             dashboardContainer.appendChild(widgetContainer);
+
+            widget.init.bind(widget, widgetContainer)();
+            
+            
         });
 
     },
@@ -47,13 +45,48 @@ let liveDataController = {
        `;
     },
     destroy: function() {
-        liveDataListenerUnsubs.forEach(it => it());
+        liveDataListenerUnsub();
     }
     
 
 };
 
 dots.tabs.register('live_data_tab', liveDataController);
+
+
+let dashboard = {
+   pages: [{ name: "Page1", widgets: [], active: true }]
+}
+
+dots.dashboard = {};
+
+let widgetFactories = {};
+dots.dashboard.registerWidget = (type, factoryFunc) => {
+    widgetFactories[type] = factoryFunc;
+};
+dots.dashboard.createWidget = (type) => {
+    return widgetFactories[type]();
+}
+
+
+var liveParameterListeners = {
+
+}
+dots.dashboard.subscribeLiveParameter = (header, callback) => {
+    if(!liveParameterListeners[header]) {
+        liveParameterListeners[header] = [];
+    }
+    liveParameterListeners[header].push(callback);
+} 
+let liveDataListenerUnsub = dots.http.subscribeLiveParameters(params => {
+       params.forEach(param => {
+            let header = param.header;
+            let listeners = liveParameterListeners[header];
+            if(listeners) {
+                listeners.forEach(listener => listener(param));
+            }
+       })
+});
 
 
 let listAvailableParameters = () => {
