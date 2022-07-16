@@ -97,6 +97,7 @@ let refreshLiveData = () => {
     });
 }
 
+//callback gets array of { header, value } each time live data is refreshed
 //returns unsubscribe func, clean up on e.g. tab destroy!
 let subscribeLiveParameters = (callback) => {
     liveListeners.push(callback);
