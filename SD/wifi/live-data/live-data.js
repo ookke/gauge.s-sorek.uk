@@ -226,8 +226,8 @@ let initDragEvents = () => {
                 let widgetDiv = widgetDivs[0];
                 draggingWidget = idToWidgetMapping[widgetDiv.id];
                 draggingDiv = widgetDiv;
-                startCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
-                startRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
+                latestCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
+                latestRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
                 dragging = true;
             }
         }
