@@ -5,7 +5,6 @@
 let liveDataController = {
     attach: function() {
        
-
         let menuVisible = false;
         document.getElementById('dashboard_menu_btn').addEventListener('click', event => {
             document.getElementById('dashboard_menu').style.display = menuVisible ? 'none': 'block';
@@ -13,21 +12,11 @@ let liveDataController = {
         });
 
         document.getElementById('add_widget').addEventListener('click', event => {
-            let dashboardContainer = document.getElementById('dashboard_container');
-
-            let widgetContainer = document.createElement('div');
-            widgetContainer.className = 'dots-widget';
-            widgetContainer.style.gridColumn = '2 / span 1';
-            widgetContainer.style.gridRow = '2 / span 1';
-
-            let widget = dots.dashboard.createWidget('LabelWidget');
-            showWidgetSettingsDialog(widget.settings, (save) => {
-                //widget.settings.dataSource.value = 'Coolant Temp';
-                dashboardContainer.appendChild(widgetContainer);
-                widget.init.bind(widget, widgetContainer)();
-            }, (cancel) => {});  
+            addWidget('LabelWidget');
             
-        });
+        });  
+
+        initDragEvents();
 
     },
     getInitialMarkup: function() {
@@ -90,6 +79,7 @@ let liveDataListenerUnsub = dots.http.subscribeLiveParameters(params => {
 
 let showWidgetSettingsDialog = (settings, save, cancel) => {
     let dialog = document.createElement('div');
+    dialog.className='widget_setting_dialog'
     dialog.style.position = 'absolute';
     dialog.style.top = 'calc(50% - 10vw)';
     dialog.style.left = 'calc(50% - 10vw)';
@@ -158,6 +148,102 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
         cancel();
     });
 
+}
+
+
+let idToWidgetMapping = {};
+let addWidget = (type) => {
+    let widget = dots.dashboard.createWidget(type);
+    widget.id = Date.now();
+    idToWidgetMapping[widget.id] = widget;
+
+    let dashboardContainer = document.getElementById('dashboard_container');
+
+    let widgetContainer = document.createElement('div');
+    widgetContainer.className = 'dots-widget';
+    widgetContainer.style.gridColumn = '2 / span 1';
+    widgetContainer.style.gridRow = '2 / span 1';
+    widgetContainer.id = widget.id;
+    
+    showWidgetSettingsDialog(widget.settings, (save) => {
+        //widget.settings.dataSource.value = 'Coolant Temp';
+        dashboardContainer.appendChild(widgetContainer);
+        widget.init.bind(widget, widgetContainer)();
+    }, (cancel) => {});  
+
+};
+
+
+
+let initDragEvents = () => {
+    let dashboardContainer = document.getElementById('dashboard_container');
+
+    //divs whose only purpose are to provide concrete grid row/col coordinates for mouse events by doing document.elementFromPoint()
+    for(let col = 1; col < 16 + 1; col++) {
+        for(let row = 1; row < 10 + 1; row++ ) {
+            let listenerDiv = document.createElement('div');
+            listenerDiv.style.gridColumn = col + ' / span 1';
+            listenerDiv.style.gridRow = row + ' / span 1';
+            listenerDiv.style.zIndex = 9;
+            listenerDiv.className = 'dots-listener';
+
+            dashboardContainer.appendChild(listenerDiv);
+        }
+    }
+
+
+    let dragging = false;
+    let latestCol = null;
+    let latestRow = null;
+    let draggingDiv = null;
+    let draggingWidget = null;
+    let listener = (event) => {
+        if(event.type == 'mousemove') {
+            if(!dragging) {
+                return;
+            }
+            var elem = document.elementFromPoint(event.clientX, event.clientY);
+            if(elem && elem.className == 'dots-listener') {
+                var col = elem.style.gridColumn.split('/')[0];
+                var row = elem.style.gridRow.split('/')[0];
+
+                if(col != latestCol) {
+                    draggingDiv.style.gridColumn = col + ' / span 1'; //TODO: handle widget sizes
+                    latestCol = col;
+                }
+                if(row != latestRow) {
+                    draggingDiv.style.gridRow = row + ' / span 1';
+                    latestRow = row;
+                }
+
+                //console.log(`${col} ${row} ${event.type} ${event.target}`);
+            }
+        }
+        else if(event.type == 'mousedown') {
+            var elems = document.elementsFromPoint(event.clientX, event.clientY);
+            var widgetDivs = elems.filter(elem => elem.className == 'dots-widget');
+            if(widgetDivs) {
+                let widgetDiv = widgetDivs[0];
+                draggingWidget = idToWidgetMapping[widgetDiv.id];
+                draggingDiv = widgetDiv;
+                startCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
+                startRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
+                dragging = true;
+            }
+        }
+        else if(event.type == 'mouseup') {
+            //update widget.position
+            dragging = false;
+            draggingDiv = null;
+            draggingWidget = null;
+        }
+        
+
+        
+    };
+    dashboardContainer.addEventListener('mousedown', listener);
+    dashboardContainer.addEventListener('mouseup', listener);
+    dashboardContainer.addEventListener('mousemove', listener);
 }
 
 

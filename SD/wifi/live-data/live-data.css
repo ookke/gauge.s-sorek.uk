@@ -29,3 +29,7 @@
 .dots-widget {
     margin: auto;
 }
+
+.widget_setting_dialog {
+    z-index: 200;
+}
