@@ -158,20 +158,23 @@ let addWidget = (type) => {
     idToWidgetMapping[widget.id] = widget;
 
     let dashboardContainer = document.getElementById('dashboard_container');
-
-    let widgetContainer = document.createElement('div');
-    widgetContainer.className = 'dots-widget';
-    widgetContainer.style.gridColumn = '2 / span 1';
-    widgetContainer.style.gridRow = '2 / span 1';
-    widgetContainer.id = widget.id;
     
     showWidgetSettingsDialog(widget.settings, (save) => {
-        //widget.settings.dataSource.value = 'Coolant Temp';
+        let widgetContainer = createWidgetContainer(widget);
         dashboardContainer.appendChild(widgetContainer);
         widget.init.bind(widget, widgetContainer)();
     }, (cancel) => {});  
 
 };
+
+let createWidgetContainer = (widget) => {
+    let widgetContainer = document.createElement('div');
+    widgetContainer.className = 'dots-widget';
+    widgetContainer.style.gridColumn = widget.position.col + ' / span 1';
+    widgetContainer.style.gridRow = widget.position.row + ' / span 1';
+    widgetContainer.id = widget.id;
+    return widgetContainer;
+}
 
 
 
@@ -222,7 +225,7 @@ let initDragEvents = () => {
         else if(event.type == 'mousedown') {
             var elems = document.elementsFromPoint(event.clientX, event.clientY);
             var widgetDivs = elems.filter(elem => elem.className == 'dots-widget');
-            if(widgetDivs) {
+            if(widgetDivs && widgetDivs.length > 0) {
                 let widgetDiv = widgetDivs[0];
                 draggingWidget = idToWidgetMapping[widgetDiv.id];
                 draggingDiv = widgetDiv;
@@ -232,7 +235,12 @@ let initDragEvents = () => {
             }
         }
         else if(event.type == 'mouseup') {
-            //update widget.position
+            if(!dragging) {
+                return;
+            }
+            draggingWidget.position.col = latestCol;
+            draggingWidget.position.row = latestRow;
+            
             dragging = false;
             draggingDiv = null;
             draggingWidget = null;

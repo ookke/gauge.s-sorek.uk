@@ -2,7 +2,7 @@
     
     let labelWidgetFactory = () => {
         let labelWidget = {
-            position: { "col": 1, "row": 1 },
+            position: { "col": 4, "row": 4 },
             settings: { fixedText: { name: "Fixed value", type: "string", value: null }, 
                 dataSource: { name: "Parameter", type: "param", value: null },
                 unit: { name: "Unit", type: "string", value: null } },
@@ -27,7 +27,7 @@
 
     let gaugeWidgetFactory = () => {
         let gaugeWidget = {
-            position: { "col": 1, "row": 1 },
+            position: { "col": 4, "row": 4 },
             settings: { min: { name: "Min", type: "float", value: null }, 
                 max: { name: "Max", type: "float", value: null }, 
                 dataSource: { name: "Parameter", type: "param", value: null },
