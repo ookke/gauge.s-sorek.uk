@@ -32,4 +32,9 @@
 
 .widget_setting_dialog {
     z-index: 200;
+    position: absolute;
+    top: calc(50% - 10vw);
+    left: calc(50% - 10vw);
+    width: 20vw;
+    min-width: 150px;
 }

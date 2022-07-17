@@ -80,11 +80,6 @@ let liveDataListenerUnsub = dots.http.subscribeLiveParameters(params => {
 let showWidgetSettingsDialog = (settings, save, cancel) => {
     let dialog = document.createElement('div');
     dialog.className='widget_setting_dialog'
-    dialog.style.position = 'absolute';
-    dialog.style.top = 'calc(50% - 10vw)';
-    dialog.style.left = 'calc(50% - 10vw)';
-    dialog.style.width='20vw';
-    //TODO: maybe display as a centered modal, with a background etc?
 
     let form = document.createElement('form');
     dialog.appendChild(form);
