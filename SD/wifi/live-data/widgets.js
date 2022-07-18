@@ -9,8 +9,6 @@
             init: function(container) {
                 let span = document.createElement('span');
                 span.className='text_widget';
-                container.style.whiteSpace = 'nowrap';
-                container.style.cursor = 'default';
                 container.appendChild(span);
                 if(this.settings.fixedText.value) {
                     span.innerHTML = this.settings.fixedText.value;
@@ -39,10 +37,23 @@
             init: function(container) {
                 let canvas = document.createElement("canvas");
                 container.appendChild(canvas);
+
+                let min = this.settings.min.value;
+                let max = this.settings.max.value;
+
+                //TODO: needs some 'nice numbers' algo to adjust tick marks to arrive at nice round numbers somehow
+                let range = max - min;
+                var nrTicks = 4;
+                var tickMarks = [];
+                for(let tick = min; tick <= max; tick = tick + (range / nrTicks)) {
+                    tickMarks.push(tick);
+                }
+
                 let gauge = new RadialGauge({
                     renderTo: canvas,
                     minValue: this.settings.min.value,
                     maxValue: this.settings.max.value,
+                    majorTicks: tickMarks,
                     title: this.settings.title.value,
                     units: this.settings.unit.value,
                     animationDuration: 50,
@@ -57,7 +68,6 @@
                     colorBorderOuterEnd: null,
                     colorNumbers: '#cc8800',
                     needleShadow: false
-
                 });
                 gauge.draw();
                 dots.dashboard.subscribeLiveParameter(this.settings.dataSource.value, (param) => {

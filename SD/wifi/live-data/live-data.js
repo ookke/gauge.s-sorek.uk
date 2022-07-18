@@ -143,7 +143,11 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
         for(let property in settings) {
             let input = fields[property];
             let setting = settings[property];
-            setting.value = input.value;
+            if(setting.type == 'float') {
+                setting.value = input.value ? parseFloat(input.value) : null;
+            } else {
+                setting.value = input.value ? input.value : null;
+            }
         }   
 
         document.body.removeChild(dialog);
