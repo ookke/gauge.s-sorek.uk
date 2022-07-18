@@ -11,8 +11,12 @@ let liveDataController = {
             menuVisible = !menuVisible;
         });
 
-        document.getElementById('add_widget').addEventListener('click', event => {
-            addWidget('LabelWidget');
+        document.getElementById('add_text_widget').addEventListener('click', event => {
+            addWidget('TextWidget');
+        }); 
+
+        document.getElementById('add_angular_gauge_widget').addEventListener('click', event => {
+            addWidget('AngularGaugeWidget');
         });  
 
         document.getElementById('save_dashboard').addEventListener('click', event => {
@@ -30,7 +34,8 @@ let liveDataController = {
         return `<div id="live_data">
             <button id="dashboard_menu_btn">Menu</button>
             <div id="dashboard_menu">
-                <button id="add_widget">Add Widget</button><br/>
+                <button id="add_text_widget">Add Text Widget</button><br/>
+                <button id="add_angular_gauge_widget">Add Angular Gauge Widget</button><br/>
                 <button id="save_dashboard">Save Dashboard</button><br/>
                 <button id="load_dashboard">Load Dashboard</button><br/>
             </div>
@@ -59,7 +64,9 @@ dots.dashboard.registerWidget = (type, factoryFunc) => {
     widgetFactories[type] = factoryFunc;
 };
 createWidget = (type) => {
-    return widgetFactories[type]();
+    let widget = widgetFactories[type]();
+    widget.type = type;
+    return widget;
 }
 
 
@@ -100,7 +107,7 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
         form.appendChild(label);
 
         let input = null;
-        if(setting.type == 'number' || setting.type == 'string') {
+        if(setting.type == 'float' || setting.type == 'string') {
             input = document.createElement('input');
             input.type = 'text';
         }
@@ -281,7 +288,7 @@ let loadDashboard = () => {
     }
 
     let dashboardContainer = document.getElementById('dashboard_container');
-    dashboardContainer.innerHTML = "";
+    dashboardContainer.querySelectorAll('.dots-widget').forEach(elem => elem.remove());
 
     let restoredDashboard = {};
     restoredDashboard.pages = JSON.parse(state).pages.map(page => { return {

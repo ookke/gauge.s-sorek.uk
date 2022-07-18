@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "canvas-gauges": "^2.1.7",
     "chart.js": "^3.8.0",
     "chartjs-adapter-date-fns": "^2.0.0",
     "chartjs-plugin-zoom": "^1.2.1",
