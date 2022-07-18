@@ -13,8 +13,15 @@ let liveDataController = {
 
         document.getElementById('add_widget').addEventListener('click', event => {
             addWidget('LabelWidget');
-            
         });  
+
+        document.getElementById('save_dashboard').addEventListener('click', event => {
+            saveDashboard();
+        }); 
+
+        document.getElementById('load_dashboard').addEventListener('click', event => {
+            loadDashboard();
+        }); 
 
         initDragEvents();
 
@@ -23,11 +30,9 @@ let liveDataController = {
         return `<div id="live_data">
             <button id="dashboard_menu_btn">Menu</button>
             <div id="dashboard_menu">
-                <!--<button id="edit_mode">Edit</button><br/>
-                <button id="save_changes">Save</button><br/>
-                <button id="cancel">Cancel</button><br/> -->
                 <button id="add_widget">Add Widget</button><br/>
-                <button id="add_page">Add Page</button><br/>
+                <button id="save_dashboard">Save Dashboard</button><br/>
+                <button id="load_dashboard">Load Dashboard</button><br/>
             </div>
             <div id="dashboard_container"></div> 
         </div>
@@ -53,7 +58,7 @@ let widgetFactories = {};
 dots.dashboard.registerWidget = (type, factoryFunc) => {
     widgetFactories[type] = factoryFunc;
 };
-dots.dashboard.createWidget = (type) => {
+createWidget = (type) => {
     return widgetFactories[type]();
 }
 
@@ -148,9 +153,12 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
 
 let idToWidgetMapping = {};
 let addWidget = (type) => {
-    let widget = dots.dashboard.createWidget(type);
+    let widget = createWidget(type);
     widget.id = Date.now();
+    widget.type = type;
+
     idToWidgetMapping[widget.id] = widget;
+    dashboard.pages[0].widgets.push(widget);
 
     let dashboardContainer = document.getElementById('dashboard_container');
     
@@ -240,7 +248,6 @@ let initDragEvents = () => {
             draggingDiv = null;
             draggingWidget = null;
         }
-        
 
         
     };
@@ -248,6 +255,57 @@ let initDragEvents = () => {
     dashboardContainer.addEventListener('mouseup', listener);
     dashboardContainer.addEventListener('mousemove', listener);
 }
+
+let saveDashboard = () => {
+    //convert widgets into serializable objects
+    let serializableDashboard = {};
+    serializableDashboard.pages = dashboard.pages.map(page => { return {
+        name: page.name,
+        active: page.active,
+        widgets: page.widgets.map(widget => { return { 
+            id: widget.id,
+            type: widget.type,
+            position: widget.position,
+            settings: widget.settings
+        }})
+    }});
+    
+    let state = JSON.stringify(serializableDashboard);
+    localStorage.setItem('dots.dashboard.state', state);
+}
+
+let loadDashboard = () => {
+    let state = localStorage.getItem('dots.dashboard.state');
+    if(state == null) {
+        alert('no dashboard state found in localStorage');
+    }
+
+    let dashboardContainer = document.getElementById('dashboard_container');
+    dashboardContainer.innerHTML = "";
+
+    let restoredDashboard = {};
+    restoredDashboard.pages = JSON.parse(state).pages.map(page => { return {
+        name: page.name,
+        active: page.active,
+        widgets: page.widgets.map(widgetInfo => {
+            //TODO: should share more code with addWidget()
+            var widget = createWidget(widgetInfo.type);
+            widget.id = widgetInfo.id;
+            idToWidgetMapping[widget.id] = widget;
+            widget.position = widgetInfo.position;
+            widget.settings = widgetInfo.settings;
+            
+            let widgetContainer = createWidgetContainer(widget);
+            dashboardContainer.appendChild(widgetContainer);
+            widget.init.bind(widget, widgetContainer)();
+
+            return widget;  
+        })
+    }});
+    dashboard = restoredDashboard;
+}
+
+
 
 
 let listAvailableParameters = () => {
