@@ -8,6 +8,7 @@
                 unit: { name: "Unit", type: "string", value: null } },
             init: function(container) {
                 let span = document.createElement('span');
+                span.className='text_widget';
                 container.style.whiteSpace = 'nowrap';
                 container.style.cursor = 'default';
                 container.appendChild(span);

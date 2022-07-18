@@ -38,3 +38,11 @@
     width: 20vw;
     min-width: 150px;
 }
+
+.text_widget {
+    white-space: nowrap;
+    padding: 5px;
+    cursor: default;
+    border: 2px solid #cc8800;
+    border-radius: 4px;
+}
