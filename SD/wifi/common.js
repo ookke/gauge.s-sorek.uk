@@ -69,6 +69,14 @@ dots.http = {
     }
 };
 
+dots.toggle_tablist = () => {
+    var tabList = document.getElementById("dots_tab_list");
+    if(tabList.style.display === "") {
+        tabList.style.display = "initial"
+    } else {
+        tabList.style.display = ""
+    }
+}
 
 let timerId = null;
 let liveListeners = [];
