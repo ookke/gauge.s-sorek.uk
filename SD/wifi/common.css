@@ -134,6 +134,10 @@ input[type=checkbox]::before {
 
 @media (orientation: portrait) {
 
+    html {
+        font-size: 2em;
+    }
+
     #dots_tab_list {
         margin-bottom: 20px;
         display: none;
@@ -145,7 +149,7 @@ input[type=checkbox]::before {
 
     #dots_tab_list .dots-tab {
         width: 95%;
-        font-size: 20px;
+        font-size: 3em;
         margin-top: 6px;
         margin-bottom: 6px;
     }

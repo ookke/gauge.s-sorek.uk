@@ -71,11 +71,7 @@ dots.http = {
 
 dots.toggle_tablist = () => {
     var tabList = document.getElementById("dots_tab_list");
-    if(tabList.style.display === "") {
-        tabList.style.display = "initial"
-    } else {
-        tabList.style.display = ""
-    }
+    tabList.style.display = tabList.style.display === "" ? "initial" : "";
 }
 
 let timerId = null;
@@ -140,6 +136,12 @@ dots.tabs = {
             let tabId = newActive.id;
             newActive.className += ' active';
             dots.tabs._activateTab(tabId);
+
+            let tabList = document.getElementById('dots_tab_list');
+            // are we in mobile mode?
+            if(tabList.style.display === "initial") {
+                tabList.style.display = ""
+            }
         }));
         let defaultTab = tabs.filter(tab => tab.className.indexOf('active') != -1)[0];
         dots.tabs._activateTab(defaultTab.id);

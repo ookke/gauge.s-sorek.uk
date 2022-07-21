@@ -308,6 +308,8 @@ min = (a, b) => {
 
 sizeUI = () => {
     let canvas = document.getElementById("chart");
+    if(!canvas) return;
+
     let chartSize = min(canvas.parentElement.offsetWidth, canvas.parentElement.offsetHeight) - 10;
     graph.postMessage({
         purpose: "resize",
