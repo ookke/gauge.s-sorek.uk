@@ -1,4 +1,8 @@
-let graph = null;
+var logViewer = logViewer || { };
+
+(() => {
+
+var graph = null;
 
 // -------- just for tab support -----------
 var viewerController = {
@@ -35,29 +39,29 @@ var viewerController = {
         <canvas id="chart" onmousedown="chartMouseDown(event)" onmouseup="chartMouseUp(event)" onmousemove="chartMouseMove(event)"></canvas>
         <div id="settingsDiv">
             <ul id="modeTabs">
-                <li id="scatter" onclick="selectActiveTab('scatter')" class="dots-tab active">Scatter Plot</li>
-                <li id="timeSeries" onclick="selectActiveTab('timeSeries')" class="dots-tab">Time Series</li>
+                <li id="scatter" onclick="logViewer.selectActiveTab('scatter')" class="dots-tab active">Scatter Plot</li>
+                <li id="timeSeries" onclick="logViewer.selectActiveTab('timeSeries')" class="dots-tab">Time Series</li>
             </ul>
             <p id="xaxisP"> 
                 <label for="xselect">X axis:</label> 
-                <select id="xselect" onchange="update_xvar();generatePlot()"></select> 
+                <select id="xselect" onchange="logViewer.update_xvar();logViewer.generatePlot()"></select> 
             </p>
             <div id="yaxiscontainer"></div>
-            <button type="button" onclick="addyaxis()">Add Y axis</button>
+            <button type="button" onclick="logViewer.addyaxis()">Add Y axis</button>
             <div id="coloursDiv">
                 <label for="coloursCheckbox">Colours:</label>
-                <input id="coloursCheckbox" type="checkbox" onchange="toggleColours()"/>
+                <input id="coloursCheckbox" type="checkbox" onchange="logViewer.toggleColours()"/>
                 <div id="hiddenColoursPanel">
                     <div>
-                        <select id="colourSelect" onchange="updateColours()"></select>
+                        <select id="colourSelect" onchange="logViewer.updateColours()"></select>
                     </div>
                     <div>
                         <label for="redValue">Value of red</label>
-                        <input id="redValue" type="number" onchange="updateColours()"/>
+                        <input id="redValue" type="number" onchange="logViewer.updateColours()"/>
                     </div>
                     <div>
                         <label for="greenValue">Value of green</label>
-                        <input id="greenValue" type="number" onchange="updateColours()"/>
+                        <input id="greenValue" type="number" onchange="logViewer.updateColours()"/>
                     </div>
                 </div>
             </div>
@@ -78,7 +82,7 @@ let columns = [];
 let yaxes = [];
 let xvar;
 
-let selectActiveTab = function(id) {
+logViewer.selectActiveTab = function(id) {
     let tabsParent = document.getElementById("modeTabs");
     for(let tab of tabsParent.children) {
         tab.classList.remove("active");
@@ -95,14 +99,14 @@ let selectActiveTab = function(id) {
         document.getElementById("coloursDiv").style.display = "none";
         document.getElementById("xselect").value = columns[0];
         xvar = columns[0];
-        generatePlot();
+        logViewer.generatePlot();
     } else {
         document.getElementById("xaxisP").style.display = "";
         document.getElementById("coloursDiv").style.display = "";
     }
 }
 
-let update_xvar = function() {
+logViewer.update_xvar = function() {
     xvar = document.getElementById("xselect").value;
 }
 
@@ -127,7 +131,7 @@ let restoreDOM = function() {
     generatePlot();
 }
 
-toggleColours = function() {
+logViewer.toggleColours = function() {
     let coloursToggle = document.getElementById("coloursCheckbox");
     let coloursPanel = document.getElementById("hiddenColoursPanel");
     if(coloursToggle.checked) {
@@ -135,10 +139,10 @@ toggleColours = function() {
     } else {
         coloursPanel.style.display = "none";
     }
-    updateColours();
+    logViewer.updateColours();
 }
 
-updateColours = function() {
+logViewer.updateColours = function() {
     let colourToggle = document.getElementById("coloursCheckbox");
     let colourSelect = document.getElementById("colourSelect");
     let redValue = document.getElementById("redValue");
@@ -181,7 +185,7 @@ chartMouseMove = function(e) {
     });
 }
 
-addyaxis = () => {
+logViewer.addyaxis = function() {
     let axis = document.createElement("div");
     axis.style.display = "block";
 
@@ -196,7 +200,7 @@ addyaxis = () => {
     };
 
     let axisSelect = document.createElement("select");
-    axisSelect.setAttribute("onchange", "generatePlot()");
+    axisSelect.setAttribute("onchange", "logViewer.generatePlot()");
     axisSelect.className = "varSelect";
 
     columns.forEach((column) => {
@@ -207,10 +211,10 @@ addyaxis = () => {
     document.getElementById("yaxiscontainer").appendChild(axis);
 
     yaxes.push(axis);
-    generatePlot();
+    logViewer.generatePlot();
 }
 
-function generatePlot() {
+logViewer.generatePlot = function() {
     let traces = [];
     yaxes.forEach((axis) => {
         traces.push({
@@ -268,10 +272,10 @@ let parseLogFile = (fileData) => {
     // xvar is only updated during the xselect onchange() which means
     // we need to initialize it during file load.
     xvar = temp[0][0];
-    addyaxis();
+    logViewer.addyaxis();
     
     logData.points_count = temp.length - 1;
-    generatePlot();
+    logViewer.generatePlot();
 }
 
 let listLogFiles = (initParams) => {
@@ -317,3 +321,5 @@ sizeUI = () => {
     })
 }
 window.onresize = sizeUI;
+
+})();
