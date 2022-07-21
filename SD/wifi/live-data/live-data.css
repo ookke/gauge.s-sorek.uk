@@ -33,7 +33,7 @@
 .dots-widget {
     margin: auto;
     user-select: none;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .selected_widget {
@@ -59,7 +59,18 @@
 }
 
 #delete_widget_button {
+    cursor: pointer;
     position: relative;
+    left: -3em;
+    top: -3em;
     display: none;
     z-index: 20;
+    width: 3em;
+    height: 3em;
+    border: 0;
+}
+
+#delete_widget_button .bi-trash {
+    width: 2em;
+    height: 2em;
 }
