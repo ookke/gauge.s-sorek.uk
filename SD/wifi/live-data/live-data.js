@@ -406,7 +406,7 @@ let loadDashboard = () => {
 
 let listAvailableParameters = () => {
     //TODO: actual implementation would load config.json and parse ecuparams defs
-    return [{header: 'Engine Speed', unit: 'rpm'}, { header: 'Coolant Temperature', unit: 'C'}, {header: 'Oil Temp', unit: 'C'}]
+    return [{header: 'Engine Speed', unit: 'rpm'}, { header: 'Coolant Temp', unit: 'C'}, {header: 'Oil Temp', unit: 'C'}]
 }
 
 
