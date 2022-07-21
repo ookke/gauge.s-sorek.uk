@@ -209,52 +209,48 @@ onmessage = function(e) {
     
     // listen: I know this is bad, just pretend it doesn't exist and I'll fix it later
 
-    if(e.data.purpose === "init") {
-        init(e.data.canvas);
-        return;
-    }
+    switch(e.data.purpose) {
+        case "init":
+            init(e.data.canvas);
+            break;
 
-    if(e.data.purpose === "mode") {
-        mode = e.data.mode;
-        graph();
-        return;
-    }
+        case "mode":
+            mode = e.data.mode;
+            graph();
+            break;
 
-    if(e.data.purpose === "resize") {
-        resize(e.data.size);
-        return;
-    }
+        case "resize":
+            resize(e.data.size);
+            break;
 
-    if(e.data.purpose === "graphing") {
-        traces = e.data.traces;
-        resetZoom();
-        graph();
-        return;
-    }
+        case "graphing":
+            traces = e.data.traces;
+            resetZoom();
+            graph();
+            break;
 
-    if(e.data.purpose === "clearScreen") {
-        clearScreen();
-        return;
-    }
-    
-    if(e.data.purpose === "mouseMove") {
-        mouseMove(e.data.mousePos);
-        return;
-    }
+        case "clearScreen":
+            clearScreen();
+            break;
 
-    if(e.data.purpose === "mouseDown") {
-        mouseDown(e.data.mousePos);
-        return;
-    }
+        case "mouseMove":
+            mouseMove(e.data.mousePos);
+            break;
 
-    if(e.data.purpose === "mouseUp") {
-        mouseUp(e.data.mousePos);
-        return;
-    }
+        case "mouseDown":
+            mouseDown(e.data.mousePos);
+            break;
 
-    if(e.data.purpose === "colours") {
-        colour = e.data.enabled ? e.data : null;
-        graph();
-        return;
+        case "mouseUp":
+            mouseUp(e.data.mousePos);
+            break;
+
+        case "colours":
+            colour = e.data.enabled ? e.data : null;
+            graph();
+            break;
+
+        default:
+            break;
     }
 }

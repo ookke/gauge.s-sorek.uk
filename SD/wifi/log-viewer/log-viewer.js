@@ -128,7 +128,7 @@ let restoreDOM = function() {
         yaxis_div.appendChild(yaxes[i]);
     }
 
-    generatePlot();
+    logViewer.generatePlot();
 }
 
 logViewer.toggleColours = function() {
