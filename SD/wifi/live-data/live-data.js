@@ -112,9 +112,21 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
             input.type = 'text';
         }
         else if(setting.type == 'param') {
-            input = document.createElement('input');
-            input.type = 'text';
-            //TODO: this should actually be a <select> populated with listAvailableParameters()
+            let headers = listAvailableParameters().map(param => param.header);
+
+            input = document.createElement('select');
+
+            let option = document.createElement("option");
+                option.innerText = '--';
+                option.value = "";
+                input.appendChild(option);
+
+            headers.forEach(hdr => {
+                let option = document.createElement("option");
+                option.innerText = hdr;
+                option.value = hdr;
+                input.appendChild(option);
+            });
         }
         //TODO: should support at least bool also
         input.name = property;
@@ -394,7 +406,7 @@ let loadDashboard = () => {
 
 let listAvailableParameters = () => {
     //TODO: actual implementation would load config.json and parse ecuparams defs
-    return [{header: 'Engine Speed', unit: 'rpm'}, { header: 'Coolant Temperature', unit: 'C'}]
+    return [{header: 'Engine Speed', unit: 'rpm'}, { header: 'Coolant Temperature', unit: 'C'}, {header: 'Oil Temp', unit: 'C'}]
 }
 
 
