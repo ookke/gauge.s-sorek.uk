@@ -14,7 +14,7 @@ dots.ui = {
 
 dots.http = {
     get: (url, success, error) => { 
-        if(url.indexOf('.csv') != -1) {
+        if(window.caches && url.indexOf('.csv') != -1) {
             return dots.http._getCached(url, success, error);
         }
 
