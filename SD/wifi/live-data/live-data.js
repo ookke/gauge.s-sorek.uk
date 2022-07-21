@@ -192,6 +192,7 @@ let createWidgetContainer = (widget) => {
 
 
 
+
 let initDragEvents = () => {
     let dashboardContainer = document.getElementById('dashboard_container');
 
@@ -208,17 +209,38 @@ let initDragEvents = () => {
         }
     }
 
+    let deleteBtnDiv = document.createElement('div');
+    deleteBtnDiv.id = 'delete_widget_button';
+
+    let deleteWidgetBtn = document.createElement('button');
+    deleteWidgetBtn.innerHTML = 'Delete';
+    deleteBtnDiv.appendChild(deleteWidgetBtn);
+    deleteWidgetBtn.addEventListener('click', () => {
+        if(selectedWidget != null) {
+            removeWidget(selectedWidget, selectedDiv);
+        }
+    })
+
+    dashboardContainer.appendChild(deleteBtnDiv);
+    
 
     let dragging = false;
     let latestCol = null;
     let latestRow = null;
     let draggingDiv = null;
     let draggingWidget = null;
+    
+  
     let listener = (event) => {
         if(event.type == 'mousemove') {
             if(!dragging) {
                 return;
             }
+            //clear selection while dragging 
+            if(selectedWidget != null) {
+                selectWidget(null, null); 
+            }
+
             var elem = document.elementFromPoint(event.clientX, event.clientY);
             if(elem && elem.className == 'dots-listener') {
                 var col = elem.style.gridColumn.split('/')[0];
@@ -238,7 +260,7 @@ let initDragEvents = () => {
         }
         else if(event.type == 'mousedown') {
             var elems = document.elementsFromPoint(event.clientX, event.clientY);
-            var widgetDivs = elems.filter(elem => elem.className == 'dots-widget');
+            var widgetDivs = elems.filter(elem => elem.classList.contains('dots-widget'));
             if(widgetDivs && widgetDivs.length > 0) {
                 let widgetDiv = widgetDivs[0];
                 draggingWidget = idToWidgetMapping[widgetDiv.id];
@@ -246,7 +268,9 @@ let initDragEvents = () => {
                 latestCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
                 latestRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
                 dragging = true;
-            }
+            } 
+            
+            
         }
         else if(event.type == 'mouseup') {
             if(!dragging) {
@@ -265,7 +289,62 @@ let initDragEvents = () => {
     dashboardContainer.addEventListener('mousedown', listener);
     dashboardContainer.addEventListener('mouseup', listener);
     dashboardContainer.addEventListener('mousemove', listener);
+
+
+    let selectedWidget = null;
+    let selectedDiv = null;
+
+    
+    let removeWidget = (selectedWidget, selectedDiv) => {
+        let dashboardContainer = document.getElementById('dashboard_container');
+        dashboardContainer.removeChild(selectedDiv);
+        dashboard.pages[0].widgets = dashboard.pages[0].widgets.filter(widget => widget != selectedWidget);
+        selectWidget(null, null);
+        //widget.destroy() or smt to clean up listeners etc
+    }
+
+
+    let selectWidget = (widget, widgetContainer) => {
+        if(selectedDiv != null) {
+            selectedDiv.classList.remove("selected_widget");
+        }
+
+        selectedWidget = widget;
+        selectedDiv = widgetContainer;
+
+        if(selectedDiv != null) {
+            selectedDiv.classList.add("selected_widget")
+
+            var col = parseInt(selectedDiv.style.gridColumn.split('/')[0]);
+            var row = parseInt(selectedDiv.style.gridRow.split('/')[0]);
+
+            deleteBtnDiv.style.display = 'block';
+            deleteBtnDiv.style.gridColumn = col + ' / span 1'; 
+            deleteBtnDiv.style.gridRow = row + ' / span 1';
+        }
+        else {
+            deleteBtnDiv.style.display = 'none';
+        }
+    }
+
+
+    
+    let clickListener = (event) => {
+        var elems = document.elementsFromPoint(event.clientX, event.clientY);
+        var widgetDivs = elems.filter(elem => elem.classList.contains('dots-widget'));
+        if(widgetDivs && widgetDivs.length > 0) {
+            let widgetDiv = widgetDivs[0];
+            let targetWidget = idToWidgetMapping[widgetDiv.id];
+            selectWidget(targetWidget, widgetDiv);        
+        } else {
+            //click outside to clear selection
+            selectWidget(null, null);
+        }
+
+    }
+    dashboardContainer.addEventListener('click', clickListener);
 }
+
 
 let saveDashboard = () => {
     //convert widgets into serializable objects

@@ -41,13 +41,14 @@
                 let min = this.settings.min.value;
                 let max = this.settings.max.value;
 
-                //TODO: needs some 'nice numbers' algo to adjust tick marks to arrive at nice round numbers somehow
+                //needs some 'nice numbers' algo to adjust tick marks to arrive at nice round numbers somehow
                 let range = max - min;
                 var nrTicks = 4;
                 var tickMarks = [];
                 for(let tick = min; tick <= max; tick = tick + (range / nrTicks)) {
                     tickMarks.push(tick);
                 }
+                
 
                 let gauge = new RadialGauge({
                     renderTo: canvas,
@@ -58,15 +59,15 @@
                     units: this.settings.unit.value,
                     animationDuration: 50,
                     colorPlate: '#282a36',
-                    colorMinorTicks: '#cc8800',
-                    colorMajorTicks: '#cc8800',
-                    colorBorderInner: '#cc8800',
+                    colorMinorTicks: '#FBBD2D',
+                    colorMajorTicks: '#FBBD2D',
+                    colorBorderInner: '#FBBD2D',
                     colorBorderInnerEnd: null,
-                    colorBorderMiddle: '#cc8800',
+                    colorBorderMiddle: '#FBBD2D',
                     colorBorderMiddleEnd: null,
-                    colorBorderOuter:'#cc8800',
+                    colorBorderOuter:'#FBBD2D',
                     colorBorderOuterEnd: null,
-                    colorNumbers: '#cc8800',
+                    colorNumbers: '#FBBD2D',
                     needleShadow: false
                 });
                 gauge.draw();
