@@ -39,7 +39,6 @@
   }
 
   .css-treeview input {
-    position: absolute;
     opacity: 0;
   }
 
@@ -125,17 +124,15 @@
   }
 
   #uploader { 
-    position: absolute;
     top: 0;
     right: 0;
     left: 0;
-    height:28px;
+    min-height:28px;
     line-height: 24px;
     padding-left: 10px;
     color:#EEE;
   }
   #tree { 
-    position: absolute;
     top: 28px;
     bottom: 0;
     left: 0;
@@ -143,17 +140,19 @@
     padding: 8px;
   }
   #editor {
+    width: 100%;
     background-color: #282a36 !important;
     height: 80vh;
   }
   #editor, #preview {
-    position: absolute;
-    top: 28px;
+    top: 10px;
     right: 0;
     bottom: 0;
-    left: 200px;
   }
   #preview {
     background-color: #EEE;
     padding:5px;
+  }
+  #tree_editor_container {
+    display: flex;
   }

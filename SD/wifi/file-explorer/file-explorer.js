@@ -9,9 +9,12 @@ var fileController = {
     },
     getInitialMarkup: function() {
         return `<div id="uploader"></div>
-        <div id="tree"></div>
-        <div id="editor"></div>
-        <div id="preview" style="display:none;"></div>`;
+                <div id="tree_editor_container">
+                  <div id="tree"></div>
+                  <div id="editor"></div>
+                </div>
+                <div id="preview" style="display:none;"></div>
+               `;
     },
     destroy: function() {
 
