@@ -20,13 +20,13 @@ dots.http = {
 
         let xhr = new XMLHttpRequest();
         xhr.onload = () => {
-            success(xhr.responseText)
+            success(xhr.response)
         }
         xhr.onerror = () => {
             if(error) {
                 error(xhr);
             } else {
-                alert('Get failed, status '+xhr.status+ ' response: '+xhr.responseText);
+                alert('Get failed, status '+xhr.status+ ' response: '+xhr.response);
             }
         }
         
@@ -35,15 +35,15 @@ dots.http = {
     },
     getWithSpinner: (url, success, error) => {
         dots.ui.showSpinner();
-        dots.http.get(url, (responseText) => {
+        dots.http.get(url, (response) => {
             dots.ui.hideSpinner();
-            success(responseText);
+            success(response);
         }, (xhr) => {
             dots.ui.hideSpinner();
             if(error) {
                 error(xhr);
             } else {
-                alert('Get failed, status '+xhr.status+ ' response: '+xhr.responseText);
+                alert('Get failed, status '+xhr.status+ ' response: '+xhr.response);
             }
         });
 
@@ -78,8 +78,12 @@ let timerId = null;
 let liveListeners = [];
 
 let refreshLiveData = () => {
-    dots.http.get('/parameters', (responseText) => {
-        let response = JSON.parse(responseText);
+
+    let xhr = new XMLHttpRequest();
+    xhr.responseType = 'arraybuffer';
+
+    xhr.onload = () => {
+        let response = msgpack.deserialize(xhr.response);
         if(response.ecuparam) {
             var data = response.ecuparam.map((point) => { return {
                 header: point.h,
@@ -95,10 +99,17 @@ let refreshLiveData = () => {
         } else {
             console.log('warn: no ecuparam property in /parameters response ?');
         }
-        
-    }, (errorRes) => {
-        console.log('error from server when requesting /parameters: '+errorRes);
-    });
+    }
+    xhr.onerror = () => {
+        if(error) {
+            error(xhr);
+        } else {
+            alert('Get live data failed, status '+xhr.status+ ' response: '+xhr.response);
+        }
+    }
+    
+    xhr.open("GET", '/parameters', true);
+    xhr.send(null);
 }
 
 //callback gets array of { header, value } each time live data is refreshed

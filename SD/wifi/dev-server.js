@@ -1,6 +1,8 @@
 var express = require('express.io');
 var fs = require('fs');
-var app = express()
+var msgpack = require('@ygoe/msgpack');
+
+var app = express();
 app.http().io();
 
 app.use("/wifi", express.static(__dirname));
@@ -19,9 +21,10 @@ let randomValueGenerator = (min, max) => {
 }
 
 app.get('/parameters', function(req, res) {
-	res.json({ ecuparam: [{ h:"Engine Speed", v: randomValueGenerator(0, 7000) },
+	res.set('Content-Type', 'application/x-msgpack');
+	res.end(msgpack.serialize({ ecuparam: [{ h:"Engine Speed", v: randomValueGenerator(0, 7000) },
 	{ h:"Coolant Temp", v: randomValueGenerator(0, 100) },
-	{ h:"Oil Temp", v: randomValueGenerator(0, 100) }] });
+	{ h:"Oil Temp", v: randomValueGenerator(0, 100) }] }));
 });
 
 
