@@ -89,7 +89,15 @@ let liveDataListenerUnsub = dots.http.subscribeLiveParameters(params => {
        })
 });
 
+
+let availableParameters = null;
+dots.http.listAvailableParameters(params => {
+    availableParameters = params;
+    //TODO: init default dashboard here mby if nothing saved
+});
+
 let showWidgetSettingsDialog = (settings, save, cancel) => {
+
     let dialog = document.createElement('div');
     dialog.className='widget_setting_dialog'
 
@@ -112,7 +120,7 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
             input.type = 'text';
         }
         else if(setting.type == 'param') {
-            let headers = listAvailableParameters().map(param => param.header);
+            let headers = availableParameters.map(param => param.header);
 
             input = document.createElement('select');
 
@@ -403,11 +411,6 @@ let loadDashboard = () => {
 
 
 
-
-let listAvailableParameters = () => {
-    //TODO: actual implementation would load config.json and parse ecuparams defs
-    return [{header: 'Engine Speed', unit: 'rpm'}, { header: 'Coolant Temp', unit: 'C'}, {header: 'Oil Temp', unit: 'C'}]
-}
 
 
 let createDeleteButton = () => {

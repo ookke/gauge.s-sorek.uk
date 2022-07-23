@@ -128,6 +128,30 @@ let subscribeLiveParameters = (callback) => {
 }
 dots.http.subscribeLiveParameters = subscribeLiveParameters;
 
+let listAvailableParameters = (callback) => {
+    dots.http.get('/config.json', response => {
+        let json = stripComments(response);
+        let config = JSON.parse(json);
+        callback(config.ecuparam);
+    }, error => {
+        alert('failed to load config.json', error);
+    })
+}
+dots.http.listAvailableParameters = listAvailableParameters;
+
+let stripComments = (str) => {
+    let out = '';
+    let rows = str.split('\n');
+    rows.forEach(row => {
+        if(row.indexOf('//') == -1) {
+            out += (row + '\n');
+        } else {
+            out += (row.split('//')[0] + '\n');
+        }
+    });
+    return out;
+}
+
 
 dots.tabs = { 
     _registry: {},
