@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var del = require('del');
 var concat = require('gulp-concat');
 var gulpIgnore = require('gulp-ignore');
+var rename = require('gulp-rename');
 var minifyJS   = require( 'gulp-uglify' ) ,
     cleanCSS  = require( 'gulp-clean-css' ) ,
     concatCSS = require('gulp-concat-css')
@@ -13,7 +14,7 @@ var minifyJS   = require( 'gulp-uglify' ) ,
 
     var dest = 'dist/';
      
-    function clean(cb) {
+    function clean() {
         return del(['./dist/**']);
     }
     
@@ -21,13 +22,12 @@ var minifyJS   = require( 'gulp-uglify' ) ,
         return gulp.src(['./**/*.css', '!./node_modules/**']).pipe(cleanCSS({ level: 1})).pipe(concatCSS('dots-ui.css')).pipe(gulp.dest(dest));
     }
 
-    function jsBundle(cb) {
-        return gulp.src(['./**/*.js', '!./node_modules/**', '!gulpfile.js', '!dev-server.js', '!./lib/**','!./log-viewer/graph.js']).pipe(minifyJS()).pipe(concat('dots-ui.js')).pipe(gulp.dest(dest));
+    function jsBundle() {
+        return gulp.src(['./**/*.js', '!./node_modules/**', '!gulpfile.js', '!dev-server.js', '!./lib/ace/**','!./log-viewer/graph.js']).pipe(minifyJS()).pipe(concat('dots-ui.js')).pipe(gulp.dest(dest));
     }
     
-    function publish(cb) {
-      // body omitted
-      cb();
+    function publish() {
+      return gulp.src('index_dist.htm').pipe(rename('index.htm')).pipe(gulp.dest(dest));
     }
     
     exports.build = series(

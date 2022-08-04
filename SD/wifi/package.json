@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@ygoe/msgpack": "1.0.3",
     "canvas-gauges": "^2.1.7",
     "chart.js": "^3.8.0",
     "chartjs-adapter-date-fns": "^2.0.0",
@@ -15,7 +16,7 @@
     "gulp-concat-css": "^3.1.0",
     "gulp-htmlmin": "^5.0.1",
     "gulp-ignore": "^3.0.0",
-    "gulp-uglify": "^3.0.2",
-    "@ygoe/msgpack": "1.0.3"
+    "gulp-rename": "^2.0.0",
+    "gulp-uglify": "^3.0.2"
   }
 }
