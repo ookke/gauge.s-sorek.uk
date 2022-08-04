@@ -85,7 +85,6 @@ let refreshLiveData = () => {
     xhr.onload = () => {
         let response = msgpack.deserialize(xhr.response);
         if(response.ecuparam) {
-            console.log(response.ecuparam);
             var data = response.ecuparam.map((point) => { return {
                 header: point.h,
                 value: point.v

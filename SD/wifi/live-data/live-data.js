@@ -246,7 +246,8 @@ let initDragEvents = () => {
     
   
     let listener = (event) => {
-        if(event.type == 'mousemove') {
+        
+        if(event.type == 'mousemove' || event.type =='touchmove') {
             if(!dragging) {
                 return;
             }
@@ -255,7 +256,11 @@ let initDragEvents = () => {
                 selectWidget(null, null); 
             }
 
-            var elem = document.elementFromPoint(event.clientX, event.clientY);
+            //normalize mouse vs touch event
+            let clientX = event.type == 'mousemove' ? event.clientX : event.changedTouches[0].clientX;
+            let clientY = event.type == 'mousemove' ? event.clientY : event.changedTouches[0].clientY;
+
+            var elem = document.elementFromPoint(clientX, clientY);
             if(elem && elem.className == 'dots-listener') {
                 var col = elem.style.gridColumn.split('/')[0];
                 var row = elem.style.gridRow.split('/')[0];
@@ -272,8 +277,13 @@ let initDragEvents = () => {
                 //console.log(`${col} ${row} ${event.type} ${event.target}`);
             }
         }
-        else if(event.type == 'mousedown') {
-            var elems = document.elementsFromPoint(event.clientX, event.clientY);
+        else if(event.type == 'mousedown' || event.type == 'touchstart') {
+
+             //normalize mouse vs touch event
+             let clientX = event.type == 'mousedown' ? event.clientX : event.touches[0].clientX;
+             let clientY = event.type == 'mousedown' ? event.clientY : event.touches[0].clientY;
+
+            var elems = document.elementsFromPoint(clientX, clientY);
             var widgetDivs = elems.filter(elem => elem.classList.contains('dots-widget'));
             if(widgetDivs && widgetDivs.length > 0) {
                 let widgetDiv = widgetDivs[0];
@@ -286,13 +296,13 @@ let initDragEvents = () => {
             
             
         }
-        else if(event.type == 'mouseup') {
+        else if(event.type == 'mouseup' || event.type == 'touchend') {
             if(!dragging) {
                 return;
             }
             draggingWidget.position.col = latestCol;
             draggingWidget.position.row = latestRow;
-            
+
             dragging = false;
             draggingDiv = null;
             draggingWidget = null;
@@ -301,9 +311,13 @@ let initDragEvents = () => {
         
     };
     dashboardContainer.addEventListener('mousedown', listener);
-    dashboardContainer.addEventListener('mouseup', listener);
-    dashboardContainer.addEventListener('mousemove', listener);
+    dashboardContainer.addEventListener('touchstart', listener);
 
+    dashboardContainer.addEventListener('mouseup', listener);
+    dashboardContainer.addEventListener('touchend', listener);
+
+    dashboardContainer.addEventListener('mousemove', listener);
+    dashboardContainer.addEventListener('touchmove', listener);
 
     let selectedWidget = null;
     let selectedDiv = null;
