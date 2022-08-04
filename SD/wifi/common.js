@@ -85,6 +85,7 @@ let refreshLiveData = () => {
     xhr.onload = () => {
         let response = msgpack.deserialize(xhr.response);
         if(response.ecuparam) {
+            console.log(response.ecuparam);
             var data = response.ecuparam.map((point) => { return {
                 header: point.h,
                 value: point.v
@@ -132,10 +133,15 @@ let listAvailableParameters = (callback) => {
     dots.http.get('/config.json', response => {
         let json = stripComments(response);
         let config = JSON.parse(json);
-        callback(config.ecuparam);
+        var params = config.ecuparam;
+        params.push({
+            "header": "FPS",
+            "unit": "fps"
+        });
+        callback(params);
     }, error => {
         alert('failed to load config.json', error);
-    })
+    });
 }
 dots.http.listAvailableParameters = listAvailableParameters;
 
