@@ -23,6 +23,7 @@ var minifyJS   = require( 'gulp-uglify' ) ,
     }
 
     function jsBundle() {
+      //TODO: doesn't handle lib/ace atm, could just copy it as is to dist/ ?
         return gulp.src(['./**/*.js', '!./node_modules/**', '!gulpfile.js', '!dev-server.js', '!./lib/ace/**','!./log-viewer/graph.js']).pipe(minifyJS()).pipe(concat('dots-ui.js')).pipe(gulp.dest(dest));
     }
     
@@ -32,7 +33,7 @@ var minifyJS   = require( 'gulp-uglify' ) ,
     
     exports.build = series(
       clean,
-       cssBundle,
-       jsBundle,
+      cssBundle,
+      jsBundle,
       publish
     );
