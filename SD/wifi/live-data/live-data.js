@@ -96,23 +96,40 @@ dots.http.listAvailableParameters(params => {
     //TODO: init default dashboard here mby if nothing saved
 });
 
-let showWidgetSettingsDialog = (settings, save, cancel) => {
+let showWidgetSettingsDialog = (widget, save, cancel) => {
+    let settings = widget.settings; 
+    let addLabel = (form, forInputName, text) => {
+        let label = document.createElement('label');
+        label.innerHTML = text;
+        label.htmlFor = forInputName;
+        form.appendChild(label);
+    }
 
     let dialog = document.createElement('div');
-    dialog.className='widget_setting_dialog'
+    dialog.className = 'widget_setting_dialog';
 
     let form = document.createElement('form');
     dialog.appendChild(form);
+
+    addLabel(form, 'widget_width', 'Width');
+    let widthInput = document.createElement('input');
+    widthInput.type = 'text';
+    widthInput.name = 'widget_width';
+    widthInput.value = widget.size.width; 
+    form.appendChild(widthInput);
+
+    addLabel(form, 'widget_height', 'Height');
+    let heightInput = document.createElement('input');
+    heightInput.type = 'text';
+    heightInput.name = 'widget_height';
+    heightInput.value = widget.size.width; 
+    form.appendChild(heightInput);
 
     let fields = {};
     for(let property in settings) {
         let setting = settings[property];
 
-        let label = document.createElement('label');
-        label.innerHTML = setting.name;
-        label.htmlFor = property;
-        label.style.width='100%';
-        form.appendChild(label);
+        addLabel(form, property, setting.name);
 
         let input = null;
         if(setting.type == 'float' || setting.type == 'string') {
@@ -139,7 +156,6 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
         //TODO: should support at least bool also
         input.name = property;
         input.id = property;
-        input.style.width='100%';
         form.appendChild(input); 
         fields[property] = input;       
     }
@@ -160,6 +176,9 @@ let showWidgetSettingsDialog = (settings, save, cancel) => {
     document.body.appendChild(dialog);
 
     saveBtn.addEventListener('click', event => {
+        widget.size.width = widthInput.value;
+        widget.size.height = heightInput.value;
+
         for(let property in settings) {
             let input = fields[property];
             let setting = settings[property];
@@ -193,7 +212,7 @@ let addWidget = (type) => {
 
     let dashboardContainer = document.getElementById('dashboard_container');
     
-    showWidgetSettingsDialog(widget.settings, (save) => {
+    showWidgetSettingsDialog(widget, (save) => {
         let widgetContainer = createWidgetContainer(widget);
         dashboardContainer.appendChild(widgetContainer);
         widget.init.bind(widget, widgetContainer)();
@@ -204,8 +223,8 @@ let addWidget = (type) => {
 let createWidgetContainer = (widget) => {
     let widgetContainer = document.createElement('div');
     widgetContainer.className = 'dots-widget';
-    widgetContainer.style.gridColumn = widget.position.col + ' / span 1';
-    widgetContainer.style.gridRow = widget.position.row + ' / span 1';
+    widgetContainer.style.gridColumn = widget.position.col + ' / span ' + widget.size.width;
+    widgetContainer.style.gridRow = widget.position.row + ' / span ' + widget.size.height;
     widgetContainer.id = widget.id;
     return widgetContainer;
 }
@@ -217,8 +236,9 @@ let initDragEvents = () => {
     let dashboardContainer = document.getElementById('dashboard_container');
 
     //divs whose only purpose are to provide concrete grid row/col coordinates for mouse events by doing document.elementFromPoint()
-    for(let col = 1; col < 16 + 1; col++) {
-        for(let row = 1; row < 10 + 1; row++ ) {
+    //!! dimensions must be in sync with live-data.css #dashboard_container styles !!
+    for(let col = 1; col < 24 + 1; col++) {
+        for(let row = 1; row < 14 + 1; row++ ) {
             let listenerDiv = document.createElement('div');
             listenerDiv.style.gridColumn = col + ' / span 1';
             listenerDiv.style.gridRow = row + ' / span 1';
@@ -266,15 +286,13 @@ let initDragEvents = () => {
                 var row = elem.style.gridRow.split('/')[0];
 
                 if(col != latestCol) {
-                    draggingDiv.style.gridColumn = col + ' / span 1'; //TODO: handle widget sizes
+                    draggingDiv.style.gridColumn = col + ' / ' + draggingDiv.style.gridColumn.split('/')[1]; 
                     latestCol = col;
                 }
                 if(row != latestRow) {
-                    draggingDiv.style.gridRow = row + ' / span 1';
+                    draggingDiv.style.gridRow = row + ' / ' +  draggingDiv.style.gridRow.split('/')[1];
                     latestRow = row;
                 }
-
-                //console.log(`${col} ${row} ${event.type} ${event.target}`);
             }
         }
         else if(event.type == 'mousedown' || event.type == 'touchstart') {
@@ -328,7 +346,7 @@ let initDragEvents = () => {
         dashboardContainer.removeChild(selectedDiv);
         dashboard.pages[0].widgets = dashboard.pages[0].widgets.filter(widget => widget != selectedWidget);
         selectWidget(null, null);
-        //widget.destroy() or smt to clean up listeners etc
+        //TODO: widget.destroy() or smt to clean up listeners etc
     }
 
 
@@ -384,6 +402,7 @@ let saveDashboard = () => {
             id: widget.id,
             type: widget.type,
             position: widget.position,
+            size: widget.size,
             settings: widget.settings
         }})
     }});
@@ -412,6 +431,7 @@ let loadDashboard = () => {
             idToWidgetMapping[widget.id] = widget;
             widget.position = widgetInfo.position;
             widget.settings = widgetInfo.settings;
+            widget.size = widgetInfo.size;
             
             let widgetContainer = createWidgetContainer(widget);
             dashboardContainer.appendChild(widgetContainer);

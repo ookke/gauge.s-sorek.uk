@@ -3,6 +3,7 @@
     let TextWidgetFactory = () => {
         let textWidget = {
             position: { "col": 4, "row": 4 },
+            size: { "width": 2, "height": 2},
             settings: { fixedText: { name: "Fixed value", type: "string", value: null }, 
                 dataSource: { name: "Parameter", type: "param", value: null },
                 unit: { name: "Unit", type: "string", value: null } },
@@ -27,6 +28,7 @@
     let angularGaugeWidgetFactory = () => {
         let gaugeWidget = {
             position: { "col": 4, "row": 4 },
+            size: { "width": 4, "height": 4 },
             settings: {
                 min: { name: "Min", type: "float", value: null }, 
                 max: { name: "Max", type: "float", value: null }, 
@@ -35,11 +37,16 @@
                 unit: { name: "Unit", type: "string", value: null } 
             },
             init: function(container) {
+                let containerWidth = container.clientWidth;
+                let containerHeight = container.clientHeight;
+
                 let canvas = document.createElement("canvas");
                 container.appendChild(canvas);
 
-                let min = this.settings.min.value;
-                let max = this.settings.max.value;
+                
+
+                let min = this.settings.min.value || 0;
+                let max = this.settings.max.value || 100;
 
                 //needs some 'nice numbers' algo to adjust tick marks to arrive at nice round numbers somehow
                 let range = max - min;
@@ -52,6 +59,8 @@
 
                 let gauge = new RadialGauge({
                     renderTo: canvas,
+                    width: containerWidth,
+                    height: containerHeight,
                     minValue: this.settings.min.value,
                     maxValue: this.settings.max.value,
                     majorTicks: tickMarks,
