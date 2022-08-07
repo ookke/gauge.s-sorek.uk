@@ -72,19 +72,23 @@
     border-radius: 4px;
 }
 
-#delete_widget_button {
+#widget_buttons_toolbar {
+    display: none;
+}
+
+#widget_buttons_toolbar button {
     cursor: pointer;
     position: relative;
     left: -3em;
     top: -3em;
-    display: none;
     z-index: 20;
     width: 3em;
     height: 3em;
     border: 0;
 }
 
-#delete_widget_button .bi-trash {
+.widget-button-icon {
     width: 2em;
     height: 2em;
 }
+
