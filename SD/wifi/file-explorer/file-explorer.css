@@ -51,6 +51,7 @@
 
   .css-treeview span {
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .css-treeview span:hover {
