@@ -62,7 +62,20 @@ dots.http = {
     },
 
     post: (url, payloadString, success, error) => {
-        //TODO
+        let xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            success(xhr.response)
+        }
+        xhr.onerror = () => {
+            if(error) {
+                error(xhr);
+            } else {
+                alert('Get failed, status '+xhr.status+ ' response: '+xhr.response);
+            }
+        }
+        
+        xhr.open("POST", url, true);
+        xhr.send(payloadString);
     },
     postWithSpinner: (url, payloadString, success, error) => {
         //TODO
