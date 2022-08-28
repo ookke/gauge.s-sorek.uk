@@ -4,20 +4,33 @@
         let textWidget = {
             position: { "col": 4, "row": 4 },
             size: { "width": 2, "height": 2},
-            settings: { fixedText: { name: "Fixed value", type: "string", value: null }, 
+            settings: { title: { name: "Title", type: "string", value: null }, 
                 dataSource: { name: "Parameter", type: "param", value: null },
                 unit: { name: "Unit", type: "string", value: null } },
             init: function(container) {
-                let span = document.createElement('span');
-                span.className='text_widget';
-                container.appendChild(span);
-                if(this.settings.fixedText.value) {
-                    span.innerHTML = this.settings.fixedText.value;
+                let wrapper = document.createElement('div');
+                wrapper.className = 'text-widget';
+                container.appendChild(wrapper);
+
+                if(this.settings.title.value) {
+                    let titleSpan = document.createElement('span');
+                    wrapper.appendChild(titleSpan);
+                    titleSpan.className = 'title-span';
+                    titleSpan.innerHTML = this.settings.title.value;
                 } 
-                else {
+                if(this.settings.dataSource.value) {
+                    let valueSpan =  document.createElement('span');
+                    wrapper.appendChild(valueSpan);
+                    valueSpan.className = 'value-span';
                     dots.dashboard.subscribeLiveParameter(this.settings.dataSource.value, (param) => {
-                        span.innerHTML = param.value + ( this.settings.unit.value ? " " + this.settings.unit.value : "");
+                        valueSpan.innerHTML = param.value;
                     });
+                }
+                if(this.settings.unit.value) {
+                    let unitSpan = document.createElement('span');
+                    wrapper.appendChild(unitSpan);
+                    unitSpan.className = 'unit-span';
+                    unitSpan.innerHTML = this.settings.unit.value;
                 }
             }
         }

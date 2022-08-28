@@ -45,7 +45,7 @@
     padding: 4px 0 4px 0;
     will-change: border;
 }
-.selected_widget > .text_widget {
+.selected_widget > .text-widget {
     border: none;
 }
 
@@ -64,13 +64,35 @@
 }
 
 
-.text_widget {
-    white-space: nowrap;
+.text-widget {
     padding: 5px;
     cursor: default;
     border: 2px solid #FBBD2D;
     border-radius: 4px;
 }
+
+.text-widget span {
+    display: block;
+    white-space: nowrap;
+    position: relative;
+    text-align: center;
+}
+
+.text-widget .title-span {
+    top: 0px;   
+    font-size: 1.5rem;
+}
+
+.text-widget .value-span {
+    font-size: 2rem;
+    color: #FBBD2D;
+}
+
+.text-widget .unit-span {
+    bottom: 0px;   
+    font-size: 0.75rem;
+}
+
 
 #widget_buttons_toolbar {
     display: none;
