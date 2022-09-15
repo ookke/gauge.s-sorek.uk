@@ -114,11 +114,7 @@ let refreshLiveData = () => {
         }
     }
     xhr.onerror = () => {
-        if(error) {
-            error(xhr);
-        } else {
-            alert('Get live data failed, status '+xhr.status+ ' response: '+xhr.response);
-        }
+        console.log('Get live data failed, status '+xhr.status+ ' response: '+xhr.response);
     }
     
     xhr.open("GET", '/parameters', true);
