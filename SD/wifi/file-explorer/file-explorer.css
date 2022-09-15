@@ -49,7 +49,7 @@
     user-select: none;
   }
 
-  .css-treeview span {
+  .css-treeview span,label {
     cursor: pointer;
     white-space: nowrap;
   }
