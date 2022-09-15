@@ -28,7 +28,7 @@ let liveDataController = {
         }); 
 
         initDragEvents();
-
+        subscribeToLiveData();
     },
     getInitialMarkup: function() {
         return `<div id="live_data">
@@ -44,7 +44,8 @@ let liveDataController = {
        `;
     },
     destroy: function() {
-        liveDataListenerUnsub();
+        liveParameterListeners = {};
+        liveDataListenerUnsubFunc();
     }
     
 
@@ -72,22 +73,27 @@ createWidget = (type) => {
 
 var liveParameterListeners = {
 
-}
+};
 dots.dashboard.subscribeLiveParameter = (header, callback) => {
     if(!liveParameterListeners[header]) {
         liveParameterListeners[header] = [];
     }
     liveParameterListeners[header].push(callback);
 } 
-let liveDataListenerUnsub = dots.http.subscribeLiveParameters(params => {
-       params.forEach(param => {
-            let header = param.header;
-            let listeners = liveParameterListeners[header];
-            if(listeners) {
-                listeners.forEach(listener => listener(param));
-            }
-       })
-});
+
+let liveDataListenerUnsubFunc = null;
+let subscribeToLiveData = () => {
+    liveDataListenerUnsubFunc = dots.http.subscribeLiveParameters(params => {
+        params.forEach(param => {
+             let header = param.header;
+             let listeners = liveParameterListeners[header];
+             if(listeners) {
+                 listeners.forEach(listener => listener(param));
+             }
+        })
+    });
+}
+
 
 
 let availableParameters = null;

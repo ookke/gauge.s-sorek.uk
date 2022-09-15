@@ -130,11 +130,17 @@ let refreshLiveData = () => {
 let subscribeLiveParameters = (callback) => {
     liveListeners.push(callback);
     if(timerId == null) {
+        console.log('got first live data listener, start polling');
         timerId = setInterval(() => { refreshLiveData(); }, 100 );
     }
 
     let unsub = () => { 
         liveListeners = liveListeners.length > 1 ? liveListeners.filter(itm => itm != callback) : []; 
+        if(liveListeners.length == 0) {
+            console.log('last listener unsubbed, stop polling');
+            clearInterval(timerId);
+            timerId = null;
+        }
     }
 
     return unsub;
