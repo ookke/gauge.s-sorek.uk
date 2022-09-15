@@ -3,7 +3,7 @@
     let TextWidgetFactory = () => {
         let textWidget = {
             position: { "col": 4, "row": 4 },
-            size: { "width": 2, "height": 2},
+            size: { "width": 3, "height": 3},
             settings: { title: { name: "Title", type: "string", value: null }, 
                 dataSource: { name: "Parameter", type: "param", value: null },
                 unit: { name: "Unit", type: "string", value: null } },
