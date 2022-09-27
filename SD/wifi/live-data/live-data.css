@@ -26,8 +26,18 @@
     height: 100%;
 }
 
+#dashboard_container.dragging {
+    border-top: 1px dotted black;
+    border-left: 1px dotted black;
+}
+
 .dots-listener {
     user-select: none;
+}
+
+#dashboard_container.dragging > .dots-listener {
+    border-bottom: 1px dotted black;
+    border-right: 1px dotted black;
 }
 
 .dots-widget {

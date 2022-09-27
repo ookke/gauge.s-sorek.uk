@@ -353,6 +353,7 @@ let initDragEvents = () => {
                 latestCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
                 latestRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
                 dragging = true;
+                dashboardContainer.classList.toggle("dragging");
             } 
             
             
@@ -365,6 +366,7 @@ let initDragEvents = () => {
             draggingWidget.position.row = latestRow;
 
             dragging = false;
+            dashboardContainer.classList.toggle("dragging");
             draggingDiv = null;
             draggingWidget = null;
         }
