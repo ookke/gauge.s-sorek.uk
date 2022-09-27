@@ -128,7 +128,7 @@ let showWidgetSettingsDialog = (widget, save, cancel) => {
     let heightInput = document.createElement('input');
     heightInput.type = 'text';
     heightInput.name = 'widget_height';
-    heightInput.value = widget.size.width; 
+    heightInput.value = widget.size.height; 
     form.appendChild(heightInput);
 
     let fields = {};
@@ -303,7 +303,9 @@ let initDragEvents = () => {
 
     let dragging = false;
     let latestCol = null;
+    let colOffset = 0;
     let latestRow = null;
+    let rowOffset = 0;
     let draggingDiv = null;
     let draggingWidget = null;
     
@@ -325,16 +327,22 @@ let initDragEvents = () => {
 
             var elem = document.elementFromPoint(clientX, clientY);
             if(elem && elem.className == 'dots-listener') {
-                var col = elem.style.gridColumn.split('/')[0];
-                var row = elem.style.gridRow.split('/')[0];
+                var col = parseInt(elem.style.gridColumn.split('/')[0]);
+                var row = parseInt(elem.style.gridRow.split('/')[0]);
 
                 if(col != latestCol) {
-                    draggingDiv.style.gridColumn = col + ' / ' + draggingDiv.style.gridColumn.split('/')[1]; 
+                    //css grid indexes start at 1
+                    let adjustedCol = Math.max(col + colOffset, 1);
+                    draggingDiv.style.gridColumn = adjustedCol + ' / ' + draggingDiv.style.gridColumn.split('/')[1]; 
+                    draggingWidget.position.col = adjustedCol;
                     latestCol = col;
                 }
                 if(row != latestRow) {
-                    draggingDiv.style.gridRow = row + ' / ' +  draggingDiv.style.gridRow.split('/')[1];
-                    latestRow = row;
+                    //css grid indexes start at 1
+                    let adjustedRow = Math.max(row + rowOffset, 1);
+                    draggingDiv.style.gridRow = adjustedRow + ' / ' +  draggingDiv.style.gridRow.split('/')[1];
+                    draggingWidget.position.row = adjustedRow;
+                    row = latestRow;
                 }
             }
         }
@@ -348,12 +356,22 @@ let initDragEvents = () => {
             var widgetDivs = elems.filter(elem => elem.classList.contains('dots-widget'));
             if(widgetDivs && widgetDivs.length > 0) {
                 let widgetDiv = widgetDivs[0];
+                var listenerDiv = elems.filter(elem => elem.classList.contains('dots-listener'))[0];
                 draggingWidget = idToWidgetMapping[widgetDiv.id];
                 draggingDiv = widgetDiv;
                 latestCol = parseInt(widgetDiv.style.gridColumn.split('/')[0]);
                 latestRow = parseInt(widgetDiv.style.gridRow.split('/')[0]);
+
+                //widgets are basically positioned by their top left corner and human instinct is to drag by the center
+                //so we must consider that dragging is often offset from the corner
+                let dragStartCol = parseInt(listenerDiv.style.gridColumn.split('/')[0]);
+                colOffset = draggingWidget.position.col -  dragStartCol;
+                
+                let dragStartRow = parseInt(listenerDiv.style.gridRow.split('/')[0]);
+                rowOffset = draggingWidget.position.row - dragStartRow;
+                
                 dragging = true;
-                dashboardContainer.classList.toggle("dragging");
+                dashboardContainer.classList.add("dragging");
             } 
             
             
@@ -362,11 +380,9 @@ let initDragEvents = () => {
             if(!dragging) {
                 return;
             }
-            draggingWidget.position.col = latestCol;
-            draggingWidget.position.row = latestRow;
-
+ 
             dragging = false;
-            dashboardContainer.classList.toggle("dragging");
+            dashboardContainer.classList.remove("dragging");
             draggingDiv = null;
             draggingWidget = null;
         }
