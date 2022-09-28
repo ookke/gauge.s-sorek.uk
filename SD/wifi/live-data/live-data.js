@@ -132,10 +132,10 @@ let showWidgetSettingsDialog = (widget, save, cancel) => {
     form.appendChild(heightInput);
 
     let fields = {};
-    for(let property in settings) {
-        let setting = settings[property];
+    for(let propertyName in settings) {
+        let setting = settings[propertyName];
 
-        addLabel(form, property, setting.name);
+        addLabel(form, propertyName, setting.name);
 
         let input = null;
         if(setting.type == 'float' || setting.type == 'string') {
@@ -157,17 +157,19 @@ let showWidgetSettingsDialog = (widget, save, cancel) => {
                 option.innerText = hdr;
                 option.value = hdr;
                 input.appendChild(option);
+
+                if(setting.value != null && setting.value == hdr) {
+                    option.selected = true;
+                }
             });
         }
-        //TODO: should support at least bool also
-        input.name = property;
-        input.id = property;
-        if(property.value != null) {
-            //TODO: handle select options also so param doesn't get reset on settings edit
-            input.value = property.value;
+        input.name = propertyName;
+        input.id = propertyName;
+        if(setting.value != null && setting.type != 'param') {
+            input.value = setting.value;
         }
         form.appendChild(input); 
-        fields[property] = input;       
+        fields[propertyName] = input;       
     }
 
     let buttons = document.createElement("div");
