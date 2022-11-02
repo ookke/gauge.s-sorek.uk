@@ -1,11 +1,17 @@
 (() => {
 var fileController = {
     attach: function() {
+
+      dots.http.loadScript('/wifi/lib/ace/ace.js', () => {
         var vars = {};
         var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) { vars[key] = value; });
         var editor = createEditor("editor", vars.file, vars.lang, vars.theme);
         var tree = createTree("tree", editor);
         createFileUploader("uploader", tree, editor);
+      });
+
+
+        
     },
     getInitialMarkup: function() {
         return `<div id="uploader"></div>

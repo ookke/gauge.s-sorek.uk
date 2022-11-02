@@ -1,6 +1,7 @@
 var dots = dots || { };
 
 (() => {
+
 dots.ui = {
     showSpinner: () => {
         let spinner = document.getElementById('dots_spinner');
@@ -76,6 +77,14 @@ dots.http = {
         
         xhr.open("POST", url, true);
         xhr.send(payloadString);
+    },
+    loadScript: (url, success) => {
+        let scriptTag = document.createElement('script');
+        scriptTag.src = url;
+        scriptTag.onload = success;
+        scriptTag.onreadystatechange = success;
+
+        document.body.appendChild(scriptTag);
     },
     postWithSpinner: (url, payloadString, success, error) => {
         //TODO
