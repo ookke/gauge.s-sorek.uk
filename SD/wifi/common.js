@@ -13,6 +13,7 @@ dots.ui = {
     }
 };
 
+var loadedScripts = [];
 dots.http = {
     get: (url, success, error) => { 
         if(window.caches && url.indexOf('.csv') != -1) {
@@ -79,12 +80,25 @@ dots.http = {
         xhr.send(payloadString);
     },
     loadScript: (url, success) => {
-        let scriptTag = document.createElement('script');
-        scriptTag.src = url;
-        scriptTag.onload = success;
-        scriptTag.onreadystatechange = success;
 
-        document.body.appendChild(scriptTag);
+        if(loadedScripts.indexOf(url) == -1) {
+            let cb = () => {
+                dots.ui.hideSpinner();
+                loadedScripts.push(url);
+                success();
+            }
+            dots.ui.showSpinner();
+
+            let scriptTag = document.createElement('script');
+            scriptTag.src = url;
+            scriptTag.onload = cb;
+            scriptTag.onreadystatechange = cb;
+
+            document.body.appendChild(scriptTag);
+        } else {
+            console.log('script cache hit');
+            success();
+        }
     },
     postWithSpinner: (url, payloadString, success, error) => {
         //TODO
