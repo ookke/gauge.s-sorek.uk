@@ -480,6 +480,8 @@ function createFileUploader(element, tree, editor){
     }
 
     var xmlHttp = null;
+
+    ace.config.set('basePath', '/wifi/lib/ace/');
     var editor = ace.edit(element);
 
     //post

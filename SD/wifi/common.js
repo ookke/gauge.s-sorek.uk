@@ -89,12 +89,32 @@ dots.http = {
             }
             dots.ui.showSpinner();
 
-            let scriptTag = document.createElement('script');
-            scriptTag.src = url;
-            scriptTag.onload = cb;
-            scriptTag.onreadystatechange = cb;
 
-            document.body.appendChild(scriptTag);
+            if(!window.DecompressionStream) {
+                let scriptTag = document.createElement('script');
+                scriptTag.src = url;
+                scriptTag.onload = cb;
+                scriptTag.onreadystatechange = cb;
+
+                document.body.appendChild(scriptTag);
+            } else {
+                let gzipUrl = url + ".gz";
+                fetch(gzipUrl).then(async response => {
+                    let stringReader = response.body.pipeThrough(new DecompressionStream("gzip")).pipeThrough(new TextDecoderStream()).getReader();
+                    var str = "";
+                    while(true) {
+                        let result = await stringReader.read();
+                        if(result.value) 
+                            str += result.value
+                        
+                        if(result.done)
+                            break;
+                    }
+                    eval(str);
+                    cb();
+                    
+                });
+            }
         } else {
             console.log('script cache hit');
             success();
