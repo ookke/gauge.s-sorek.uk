@@ -2,25 +2,41 @@ var logViewer = logViewer || { };
 
 (() => {
 
-var graph = null;
+graphWorkerEnabled = true;
+
+function loadGraphContainer() {
+    return new Promise((resolve) => {
+        var script = document.createElement('script');
+        script.src = '/wifi/log-viewer/graph.js';
+        script.onload = () => {resolve()}
+        var head = document.getElementsByTagName("head")[0];
+        head.appendChild(script);
+    })
+}
+
+var graph;
+if (HTMLCanvasElement.prototype.transferControlToOffscreen && graphWorkerEnabled) {
+    graph = new Worker("/wifi/log-viewer/graph.js");
+} else {
+    wrapAsync = async () => {
+        await loadGraphContainer();
+        graph = GraphContainer;
+    }
+    wrapAsync();
+}
 
 // -------- just for tab support -----------
 var viewerController = {
     attach: function(params) {
-        
-        // TODO: init the graph worker when the page is initially loaded
-        //       that way we don't have to be connected to Gauge.S to
-        //       properly click on the log viewer tab
-        graph = new Worker("/wifi/log-viewer/graph.js");
 
         let canvas = document.getElementById("chart");
-        if (!('transferControlToOffscreen' in canvas)) {
-            document.querySelector("#tabs_content").innerHTML = "webgl in worker unsupported";
-            console.error("webgl in worker unsupported");
-            return;
+
+        // if we can we want to graph using a worker
+        var offscreen = canvas;
+        if (HTMLCanvasElement.prototype.transferControlToOffscreen && graphWorkerEnabled) {
+            offscreen = canvas.transferControlToOffscreen();
         }
 
-        var offscreen = canvas.transferControlToOffscreen();
         graph.postMessage({ 
             purpose: "init",
             canvas: offscreen,
